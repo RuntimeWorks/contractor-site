@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Tile calculator: how many tiles and boxes" description="How many tiles and boxes for a floor or wall, counting the grout joint, with your own allowance for cuts." h1="Tile calculator" lead="How many tiles a floor or wall needs, counting the grout joint." crumb="Tile" path="/tile-calculator/">
+  <Calc slot="calculator" tool="tile" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Area</strong> = length × width.</li>
+    <li>Each tile with its <strong>grout joint</strong> covers (tile length + joint) × (tile width + joint).</li>
+    <li><strong>Tiles</strong> = area ÷ that, rounded up; <strong>boxes</strong> = tiles ÷ tiles per box, rounded up.</li>
+    <li>The extra for cuts and breakage is your own figure; patterns laid on the diagonal waste more.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Plain geometry; no outside figures. Units: NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

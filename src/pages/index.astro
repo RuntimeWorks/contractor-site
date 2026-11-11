@@ -6,7 +6,7 @@ import { brand, site, tools } from "../data/brand"
 
 const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: site.name, url: `${site.url}/`, description: site.description, publisher: { "@type": "Organization", name: brand.legalName, url: brand.companyUrl } }
 ---
-<Base title={`${site.name}: concrete and square footage`} description={site.description} jsonLd={jsonLd}>
+<Base title={`${site.name}: concrete, square footage, stairs, roofing and more`} description={site.description} jsonLd={jsonLd}>
   <section class="mx-auto max-w-page px-gutter pt-12" aria-labelledby="h1">
     <h1 id="h1" class="heading max-w-measure text-3xl text-gray-12 sm:text-4xl">Calculators for contractors</h1>
     <p class="mt-4 max-w-measure text-lg text-gray-11">Free, with no account. Each one shows its formula and where its numbers come from.</p>

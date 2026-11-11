@@ -190,7 +190,7 @@ ok(charts ? `${charts} charts checked` : "no charts on the site")
 ok(storing ? `${storing} pages store data or call other sites` : `no cookies, stored items or calls to other sites on ${pages.length} pages: no consent banner needed`)
 
 // 5 Colour-vision deficiencies: screenshots for the look round.
-const cvdPages = ["/", "/concrete-calculator/", "/square-footage-calculator/", "/gravel-calculator/"]
+const cvdPages = ["/", "/concrete-calculator/", "/square-footage-calculator/", "/gravel-calculator/", "/stair-calculator/"]
 for (const u of cvdPages.filter((p) => pages.includes(p))) {
   const page = await browser.newPage({ reducedMotion: "reduce", viewport: { width: 1280, height: 900 } })
   const cdp = await page.context().newCDPSession(page)
@@ -229,6 +229,13 @@ const tasks = [
     await p.getByRole("textbox", { name: "Length", exact: true }).fill("15")
     await p.getByRole("textbox", { name: "Width", exact: true }).fill("12")
     await p.getByRole("status").getByText("180 square feet.").waitFor({ timeout: 5000 })
+  }],
+  ["size the stairs for a 9 ft rise from the home page", async (p) => {
+    await p.goto(base + "/")
+    await p.getByRole("main").getByRole("link", { name: "Stair calculator" }).click()
+    await p.getByRole("textbox", { name: "Total rise, floor to floor", exact: true }).fill("108")
+    // 108 in ÷ 7.75 in = 13.9, so 14 risers of 108 ÷ 14 = 7.714 in and 13 treads (IRC R311.7.5.1).
+    await p.getByRole("status").getByText("14 risers of 7.714 in and 13 treads.").waitFor({ timeout: 5000 })
   }],
   ["find who makes the site and how to report a mistake", async (p) => {
     await p.goto(base + "/")

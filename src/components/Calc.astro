@@ -1,0 +1,77 @@
+---
+// Any calculator described by a ToolSpec (src/lib/tool.ts). Native fields with visible labels, the first answer
+// rendered on the server from the same function the browser runs, the answer announced politely (role="status").
+// The rule, its numbers and their sources live in the tool's file under src/lib/tools/.
+import { registry } from "../lib/registry"
+import { lengthUnits } from "../lib/units"
+import { startValues } from "../lib/tool"
+
+interface Props { tool: string }
+const spec = registry[Astro.props.tool]
+if (!spec) throw new Error(`No calculator called ${Astro.props.tool}`)
+const first = spec.explain(startValues(spec.fields))
+if (!first.ok) throw new Error(`${spec.id}: the page's starting values must give an answer: ${first.message}`)
+const p = (id: string) => `${spec.id}-${id}`
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
+---
+<section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
+  <h2 id="calc-h2" class="heading text-2xl text-gray-12">{spec.heading}</h2>
+  <p class="mt-2 max-w-measure text-gray-11">The answer updates as you type. Nothing you enter is stored or sent anywhere.</p>
+  <div role="group" aria-labelledby="calc-h2" class="mt-6 card p-4 sm:p-6" data-tool={spec.id}>
+    <div class="grid items-start gap-4 sm:grid-cols-2">
+      {spec.fields.map((f) => (
+        <div class="grid gap-1 text-sm">
+          <label for={p(f.id)} class="font-medium text-gray-12">{f.label}</label>
+          {f.kind === "select" ? (
+            <select id={p(f.id)} class={`${select} w-full`} aria-describedby={f.hint ? `${p(f.id)}-hint` : undefined}>
+              {f.options.map((o) => <option value={o.value} selected={o.value === f.value}>{o.label}</option>)}
+            </select>
+          ) : f.kind === "length" ? (
+            <div class="flex gap-2">
+              <input id={p(f.id)} type="text" inputmode="decimal" value={f.value} autocomplete="off" aria-describedby={f.hint ? `${p(f.id)}-hint` : undefined} class={field} />
+              <select id={`${p(f.id)}-unit`} aria-label={`${f.label} unit`} class={select}>
+                {lengthUnits.map((u) => <option value={u.value} selected={u.value === f.unit}>{u.label}</option>)}
+              </select>
+            </div>
+          ) : (
+            <input id={p(f.id)} type="text" inputmode={f.whole ? "numeric" : "decimal"} value={f.value} autocomplete="off" aria-describedby={f.hint ? `${p(f.id)}-hint` : undefined} class={field} />
+          )}
+          {f.hint && <p id={`${p(f.id)}-hint`} class="text-gray-11">{f.hint}</p>}
+        </div>
+      ))}
+    </div>
+    <div class="mt-6 rounded-control bg-sand p-5 text-gray-12" role="status" aria-live="polite">
+      <p class="text-xl font-semibold" data-o="headline">{first.headline}</p>
+      <p class="mt-2 font-medium" data-o="extra" hidden={!first.extra}>{first.extra ?? ""}</p>
+      <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { registry } from "../lib/registry"
+  import { parse } from "../lib/tool"
+
+  for (const box of document.querySelectorAll<HTMLElement>("[data-tool]")) {
+    const spec = registry[box.dataset.tool ?? ""]
+    if (!spec) continue
+    const out = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)!
+    const update = () => {
+      const v = Object.fromEntries(spec.fields.map((f) => {
+        const el = box.querySelector<HTMLInputElement | HTMLSelectElement>(`#${spec.id}-${f.id}`)!
+        const unit = f.kind === "length" ? box.querySelector<HTMLSelectElement>(`#${spec.id}-${f.id}-unit`)!.value : undefined
+        return [f.id, parse(f, el.value, unit)]
+      }))
+      const a = spec.explain(v)
+      const extra = out("extra")
+      if (!a.ok) { out("headline").textContent = a.message; out("formula").replaceChildren(); extra.hidden = true; return }
+      out("headline").textContent = a.headline
+      extra.hidden = !a.extra
+      extra.textContent = a.extra ?? ""
+      out("formula").replaceChildren(...a.lines.map((l) => Object.assign(document.createElement("p"), { textContent: l })))
+    }
+    box.addEventListener("input", update)
+    box.addEventListener("change", update)
+  }
+</script>

@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="BTU calculator: room air conditioner size" description="The room air conditioner size in BTU per hour for a room, from ENERGY STAR's sizing chart and its adjustments for sun, people and kitchens." h1="BTU calculator" lead="What size room air conditioner a room needs, in BTU per hour." crumb="BTU" path="/btu-calculator/">
+  <Calc slot="calculator" tool="btu" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>The <strong>floor area</strong> (length × width) is looked up in ENERGY STAR's chart, from 5,000 BTU per hour for 100 to 150 square feet up to 34,000 for 2,000 to 2,500.</li>
+    <li>ENERGY STAR's adjustments: a <strong>very sunny</strong> room adds 10 percent; each person beyond two adds <strong>600 BTU</strong>; a unit used in a <strong>kitchen</strong> adds 4,000 BTU.</li>
+    <li>The chart assumes an 8-foot ceiling. For central air or a whole house, a load calculation by an HVAC contractor is the right tool.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>ENERGY STAR, <a href="https://www.energystar.gov/products/room_air_conditioners">Room Air Conditioners</a>: cooling capacity chart and adjustments (read 2026-11-11).</li>
+  </ul>
+</ToolPage>

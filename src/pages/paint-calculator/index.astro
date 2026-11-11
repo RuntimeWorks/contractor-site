@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Paint calculator: gallons for walls and ceilings" description="Gallons of paint for a room's walls and ceiling, less doors and windows, for any number of coats and your paint's coverage." h1="Paint calculator" lead="How many gallons of paint a room needs." crumb="Paint" path="/paint-calculator/">
+  <Calc slot="calculator" tool="paint" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Area</strong> = 2 × (length + width) × wall height, plus the ceiling if chosen, less doors and windows.</li>
+    <li><strong>Gallons</strong> = area × coats ÷ coverage per gallon.</li>
+    <li>Coverage starts at 350 square feet per gallon, the low end of Sherwin-Williams' "about 350-400 square feet". Rough or porous walls take more; your can's label wins.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Sherwin-Williams, <a href="https://www.sherwin-williams.com/en-us/color/color-tools/paint-calculator">Paint Calculator FAQs</a>: "A gallon of paint typically covers about 350-400 square feet" (read 2026-11-11).</li>
+  </ul>
+</ToolPage>

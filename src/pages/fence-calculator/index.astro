@@ -1,0 +1,19 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Fence calculator: posts, rails and concrete bags" description="Posts, sections and rails for a straight fence run, and the concrete for the post holes in 80 lb and 50 lb bags." h1="Fence calculator" lead="How many posts, rails and bags of concrete a fence run needs." crumb="Fence" path="/fence-calculator/">
+  <Calc slot="calculator" tool="fence" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Sections</strong> = fence length ÷ post spacing, rounded up. <strong>Posts</strong> = sections + 1 for one straight run.</li>
+    <li><strong>Rails</strong> = sections × rails per section.</li>
+    <li><strong>Concrete per hole</strong> = π × (hole diameter ÷ 2)² × depth, less the square post below ground (post width² × depth).</li>
+    <li><strong>Bags</strong>: QUIKRETE Concrete Mix yields about 0.60 cubic feet per 80 lb bag and 0.375 per 50 lb bag; counts are rounded up.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>QUIKRETE, Concrete Mix (No. 1101) data sheet: bag yields (the same figures as the <a href="/concrete-calculator/">concrete calculator</a>).</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

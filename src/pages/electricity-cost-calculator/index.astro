@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Electricity cost calculator: what an appliance costs to run" description="Kilowatt-hours and cost to run an appliance from its watts and hours of use, starting from the US average residential price." h1="Electricity cost calculator" lead="What an appliance or tool costs to run, from its watts and how long it runs." crumb="Electricity cost" path="/electricity-cost-calculator/">
+  <Calc slot="calculator" tool="power" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Energy</strong> in kilowatt-hours = watts × hours a day × days ÷ 1,000.</li>
+    <li><strong>Cost</strong> = kilowatt-hours × price per kilowatt-hour.</li>
+    <li>The starting price, 18.16 cents per kilowatt-hour, is the US average residential price for August 2026. Prices run from about 12.7 cents in Nevada to 47.2 cents in Hawaii; your bill shows yours.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>US Energy Information Administration, <a href="https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a">Electric Power Monthly, Table 5.6.A</a>: average price of electricity to ultimate customers by state, August 2026 (read 2026-11-11).</li>
+  </ul>
+</ToolPage>

@@ -1,0 +1,19 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Roofing calculator: squares and bundles of shingles" description="Roof area, roofing squares and bundles of shingles from the footprint and pitch, using the shingle maker's bundles per square." h1="Roofing calculator" lead="How many squares of roof and bundles of shingles a house needs, from its footprint and pitch." crumb="Roofing" path="/roofing-calculator/">
+  <Calc slot="calculator" tool="roofing" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Roof area</strong> = footprint area (with the overhangs) × the pitch multiplier √(1 + (pitch ÷ 12)²). This holds for any roof whose faces all share one pitch, gables and hips alike.</li>
+    <li>A <strong>square</strong> is 100 square feet of roof.</li>
+    <li><strong>Bundles</strong> = squares × bundles per square, rounded up. GAF Timberline HDZ, the starting value, is 3 bundles per square; other shingles differ, so read the wrapper.</li>
+    <li>Waste for cuts, starter strip and ridge cap is your own figure; the calculator adds what you enter.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>GAF, <a href="https://www.gaf.com/en-us/document-library/documents/specifications/timberline-hdz-shingles-spec-sheet-resgn467hdz.pdf">Timberline HDZ shingles spec sheet</a>: "Bundles/Square: 3" (read 2026-11-11).</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

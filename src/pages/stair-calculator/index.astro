@@ -1,0 +1,19 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Stair calculator: risers, treads and stringer length" description="Number of risers and treads, riser height, total run, stringer length and angle from the total rise, checked against the IRC limits of 7¾ in risers and 10 in treads." h1="Stair calculator" lead="How many steps, how tall each riser is, how far the stairs run and how long the stringer is, from the height floor to floor." crumb="Stairs" path="/stair-calculator/">
+  <Calc slot="calculator" tool="stairs" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Risers</strong> = total rise ÷ the tallest riser allowed, rounded up, so every step is the same height and none is too tall.</li>
+    <li><strong>Riser height</strong> = total rise ÷ risers. <strong>Treads</strong> = risers − 1, because the top step is the floor above.</li>
+    <li><strong>Total run</strong> = treads × tread depth. <strong>Stringer</strong> = √(rise² + run²); the angle is the arctangent of riser height ÷ tread depth.</li>
+    <li>The answer says whether the steps meet the International Residential Code limits: a riser of no more than 7¾ inches (R311.7.5.1) and a tread of at least 10 inches (R311.7.5.2). Your local code may differ and wins.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>International Code Council, <a href="https://codes.iccsafe.org/content/IRC2021P2">2021 International Residential Code</a>, sections R311.7.5.1 (riser height) and R311.7.5.2 (tread depth), as quoted in the City of Boise <a href="https://www.cityofboise.org/media/14405/437-treads-risers_march-2022.pdf">IRC handout on treads and risers</a> (read 2026-11-11).</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

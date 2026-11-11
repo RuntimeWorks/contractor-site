@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Roof pitch calculator: pitch, angle and multiplier" description="Roof pitch in inches per 12, the angle in degrees, the slope in percent and the pitch multiplier that turns plan area into roof area." h1="Roof pitch calculator" lead="The pitch, angle and slope of a roof from its rise and run, and the multiplier for roof area." crumb="Roof pitch" path="/roof-pitch-calculator/">
+  <Calc slot="calculator" tool="pitch" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>US roofers state <strong>pitch</strong> as inches of rise for every 12 inches of level run: rise ÷ run × 12.</li>
+    <li>The <strong>angle</strong> is the arctangent of rise ÷ run; the <strong>slope</strong> in percent is rise ÷ run × 100.</li>
+    <li>The <strong>pitch multiplier</strong> is √(1 + (rise ÷ run)²). A roof of one pitch covers its plan area times this number.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Plain trigonometry; no outside figures. Units: NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Rebar calculator: bars, feet and weight for a slab" description="How many feet and pounds of rebar a slab grid needs, by bar size and spacing, with ASTM A615 weights per foot." h1="Rebar calculator" lead="How many feet and pounds of rebar a slab grid needs." crumb="Rebar" path="/rebar-calculator/">
+  <Calc slot="calculator" tool="rebar" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Bars each way</strong> = (span − 2 × the edge distance) ÷ spacing, rounded down, plus one. Each bar runs the other span less the two edge distances.</li>
+    <li><strong>Weight</strong> = total feet × the nominal weight per foot for the bar size, from ASTM A615: #3 0.376, #4 0.668, #5 1.043, #6 1.502, #7 2.044, #8 2.670, #10 4.303 and #11 5.313 pounds per foot.</li>
+    <li>Laps, bends and cutting waste are not counted; the stock-bar count is a floor, not an order.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>ASTM A615 nominal bar weights, as charted in <a href="https://www.ckcog.com/wp-content/uploads/Rebar-Sizing.pdf">ASTM A615 Chart for Reinforcing Steel Bars</a> and matching <a href="https://www.southernrebar.com/reference/rebar-weight-per-linear-foot">Southern Rebar's weight table</a> (read 2026-11-11).</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

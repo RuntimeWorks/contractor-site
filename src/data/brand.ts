@@ -10,7 +10,7 @@ export const site = {
   name: "Contractor calculators",
   /** Working address: a subdomain of the company's own boldsand.com, so no new domain is needed to start. */
   url: "https://contractors.boldsand.com",
-  description: "Free calculators for contractors: concrete in cubic yards and bags, and square footage, with every formula and source shown.",
+  description: "Free calculators for contractors: concrete, square footage, gravel, stairs, roofing, drywall, paint, tile, fence, rebar and more, with every formula and source shown.",
 }
 
 export const brand = {
@@ -48,4 +48,15 @@ export const tools: Tool[] = [
   { href: "/topsoil-calculator/", name: "Topsoil calculator", summary: "Cubic yards and tons of topsoil for a lawn or garden bed." },
   { href: "/cubic-yard-calculator/", name: "Cubic yard calculator", summary: "Cubic yards from length, width and depth in any unit, with the weight for gravel, stone, sand and topsoil." },
   { href: "/board-foot-calculator/", name: "Board foot calculator", summary: "Board feet of lumber for one piece or a whole order, and what it costs." },
+  { href: "/stair-calculator/", name: "Stair calculator", summary: "Risers, treads, total run and stringer length from the total rise, checked against the IRC limits." },
+  { href: "/roof-pitch-calculator/", name: "Roof pitch calculator", summary: "Pitch in inches per 12, angle in degrees and the multiplier from plan area to roof area." },
+  { href: "/roofing-calculator/", name: "Roofing calculator", summary: "Roof area, squares and bundles of shingles from the footprint and pitch." },
+  { href: "/pool-volume-calculator/", name: "Pool volume calculator", summary: "Gallons and liters in a rectangular, round or oval pool, sloped or flat." },
+  { href: "/fence-calculator/", name: "Fence calculator", summary: "Posts, sections, rails and concrete bags for a straight fence run." },
+  { href: "/tile-calculator/", name: "Tile calculator", summary: "Tiles and boxes for a floor or wall, counting the grout joint." },
+  { href: "/drywall-calculator/", name: "Drywall calculator", summary: "Sheets of 4×8, 4×10 or 4×12 drywall and joint tape for a room." },
+  { href: "/paint-calculator/", name: "Paint calculator", summary: "Gallons of paint for a room's walls and ceiling, for any number of coats." },
+  { href: "/btu-calculator/", name: "BTU calculator", summary: "Room air conditioner size in BTU per hour from ENERGY STAR's chart." },
+  { href: "/rebar-calculator/", name: "Rebar calculator", summary: "Feet, pounds and stock bars of rebar for a slab grid, by bar size and spacing." },
+  { href: "/electricity-cost-calculator/", name: "Electricity cost calculator", summary: "Kilowatt-hours and cost to run an appliance from its watts and hours of use." },
 ]

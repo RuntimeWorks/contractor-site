@@ -1,0 +1,17 @@
+// Every calculator built on src/lib/tool.ts, by id. The page component and its browser script look tools up here.
+import type { ToolSpec } from "./tool"
+import { stairs } from "./tools/stairs"
+import { roofPitch } from "./tools/roofpitch"
+import { roofing } from "./tools/roofing"
+import { pool } from "./tools/pool"
+import { fence } from "./tools/fence"
+import { tile } from "./tools/tile"
+import { drywall } from "./tools/drywall"
+import { paint } from "./tools/paint"
+import { btu } from "./tools/btu"
+import { rebar } from "./tools/rebar"
+import { electricity } from "./tools/electricity"
+
+export const registry: Record<string, ToolSpec> = Object.fromEntries(
+  [stairs, roofPitch, roofing, pool, fence, tile, drywall, paint, btu, rebar, electricity].map((t) => [t.id, t]),
+)

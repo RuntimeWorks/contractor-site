@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Pool volume calculator: gallons and liters" description="Gallons and liters of water in a rectangular, round or oval pool, with a sloped or flat bottom, using the exact US gallon." h1="Pool volume calculator" lead="How many gallons of water a pool holds, for dosing chemicals and filling it." crumb="Pool volume" path="/pool-volume-calculator/">
+  <Calc slot="calculator" tool="pool" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Average depth</strong> = (shallow end + deep end) ÷ 2, for a pool whose bottom slopes evenly.</li>
+    <li><strong>Surface</strong>: rectangle = length × width; round = π × (diameter ÷ 2)²; oval = π × (length ÷ 2) × (width ÷ 2).</li>
+    <li><strong>Gallons</strong> = surface × average depth × 7.4805, because a cubic foot is 1,728 cubic inches and a US gallon is exactly 231 cubic inches.</li>
+    <li><strong>Liters</strong>: 1 cubic foot is 28.3168 liters, from 1 foot = 0.3048 m.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>NIST, <a href="https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44">Handbook 44</a>, Appendix C: the US gallon is 231 cubic inches; 1 foot = 0.3048 m.</li>
+  </ul>
+</ToolPage>

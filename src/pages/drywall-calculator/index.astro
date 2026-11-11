@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Drywall calculator: sheets and joint tape" description="Sheets of 4×8, 4×10 or 4×12 drywall for a room's walls and ceiling, less doors and windows, and the joint tape." h1="Drywall calculator" lead="How many sheets of drywall a room needs, and about how much joint tape." crumb="Drywall" path="/drywall-calculator/">
+  <Calc slot="calculator" tool="drywall" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Walls</strong> = 2 × (length + width) × height. The <strong>ceiling</strong>, if chosen, adds length × width. Doors and windows are taken away.</li>
+    <li><strong>Sheets</strong> = area ÷ sheet area, rounded up. USG Sheetrock panels are 48 inches wide in 8 to 12 foot lengths.</li>
+    <li><strong>Joint tape</strong>: USG's installation guide lists 296 feet of tape for 800 square feet of panels, about 0.37 feet per square foot.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>USG, <a href="https://www.usg.com/en-US/p/product/sheetrock-brand-gypsum-panels-141090">Sheetrock Brand Gypsum Panels</a>: panel size 48 in × 8 to 12 ft (read 2026-11-11).</li>
+    <li>USG, <a href="https://www.usg.com/content/dam/USG_Marketing_Communications/united_states/product_promotional_materials/finished_assets/sheetrock-gypsum-panels-installation-guide-en-J371.pdf">Sheetrock gypsum panels installation guide (J371)</a>: panel areas and joint tape per area.</li>
+  </ul>
+</ToolPage>
