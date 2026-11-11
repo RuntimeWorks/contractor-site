@@ -1,0 +1,97 @@
+---
+// Bulk materials by the cubic yard (gravel, stone, sand, topsoil, mulch). The rule and its words are
+// src/lib/materials.ts (sources there), tested in tests/calc.test.ts. Same controls and pattern as the concrete
+// calculator: native fields, a unit select beside each, the first answer rendered on the server from the same function
+// the browser runs, and the answer announced politely (role="status").
+import { lengthUnits, type LengthUnit } from "../lib/units"
+import { explainMaterial, materials, type Material } from "../lib/materials"
+
+interface Props { material: Material; depth: string; depthUnit: LengthUnit; bag: string; heading: string }
+const { material, depth, depthUnit, bag, heading } = Astro.props
+const first = explainMaterial({ material, useArea: false, length: { value: 10, unit: "ft" }, width: { value: 10, unit: "ft" }, squareFeet: null, depth: { value: Number(depth), unit: depthUnit }, bagCubicFeet: bag ? Number(bag) : null })
+if (!first.ok) throw new Error(`The page's starting values must give an answer: ${first.message}`)
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
+const dims: [string, string, string, LengthUnit, string][] = [
+  ["length", "Length", "10", "ft", ""],
+  ["width", "Width", "10", "ft", ""],
+  ["depth", "Depth", depth, depthUnit, ""],
+]
+---
+<section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
+  <h2 id="calc-h2" class="heading text-2xl text-gray-12">{heading}</h2>
+  <p class="mt-2 max-w-measure text-gray-11">The answer updates as you type. Nothing you enter is stored or sent anywhere.</p>
+
+  <div role="group" aria-labelledby="calc-h2" class="mt-6 card p-4 sm:p-6" data-materials>
+    <div class="grid gap-1 text-sm sm:max-w-sm">
+      <label for="material" class="font-medium text-gray-12">Material</label>
+      <select id="material" class={select}>
+        {Object.entries(materials).map(([k, m]) => <option value={k} selected={k === material}>{m.label}</option>)}
+      </select>
+    </div>
+    <div class="mt-6 grid items-start gap-4 sm:grid-cols-2">
+      {dims.map(([id, label, value, unit]) => (
+        <div class="grid gap-1 text-sm">
+          <label for={id} class="font-medium text-gray-12">{label}</label>
+          <div class="flex gap-2">
+            <input id={id} type="text" inputmode="decimal" value={value} autocomplete="off" class={field} />
+            <select id={`${id}-unit`} aria-label={`${label} unit`} class={select}>
+              {lengthUnits.map((u) => <option value={u.value} selected={u.value === unit}>{u.label}</option>)}
+            </select>
+          </div>
+        </div>
+      ))}
+      <div class="grid gap-1 text-sm">
+        <label for="sqft" class="font-medium text-gray-12">Or the area in square feet</label>
+        <input id="sqft" type="text" inputmode="decimal" value="" autocomplete="off" aria-describedby="sqft-hint" class={field} />
+        <p id="sqft-hint" class="text-gray-11">Used when length and width are both empty.</p>
+      </div>
+      <div class="grid gap-1 text-sm">
+        <label for="bag" class="font-medium text-gray-12">Bag size in cubic feet, optional</label>
+        <input id="bag" type="text" inputmode="decimal" value={bag} autocomplete="off" aria-describedby="bag-hint" class={field} />
+        <p id="bag-hint" class="text-gray-11">The volume printed on the bag. Leave empty for bulk delivery.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-control bg-sand p-5 text-gray-12" role="status" aria-live="polite">
+      <p class="text-xl font-semibold" data-o="headline">{first.headline}</p>
+      <dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm" data-o="rows">
+        {first.rows.map(([k, v]) => (<><dt>{k}</dt><dd class="font-semibold">{v}</dd></>))}
+      </dl>
+      <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { explainMaterial, type Material } from "../lib/materials"
+  import { readNumber, type LengthUnit } from "../lib/units"
+
+  const box = document.querySelector<HTMLElement>("[data-materials]")
+  if (box) {
+    const $ = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)!
+    const raw = (id: string) => box.querySelector<HTMLInputElement>(`#${id}`)!.value
+    const len = (id: string) => {
+      const value = readNumber(raw(id))
+      return value === null ? null : { value, unit: box.querySelector<HTMLSelectElement>(`#${id}-unit`)!.value as LengthUnit }
+    }
+    const update = () => {
+      const bothEmpty = raw("length").trim() === "" && raw("width").trim() === ""
+      const a = explainMaterial({
+        material: box.querySelector<HTMLSelectElement>("#material")!.value as Material,
+        useArea: bothEmpty,
+        length: len("length"),
+        width: len("width"),
+        squareFeet: readNumber(raw("sqft")),
+        depth: len("depth"),
+        bagCubicFeet: raw("bag").trim() === "" ? null : readNumber(raw("bag")),
+      })
+      if (!a.ok) { $("headline").textContent = a.message; $("rows").replaceChildren(); $("formula").replaceChildren(); return }
+      $("headline").textContent = a.headline
+      $("rows").replaceChildren(...a.rows.flatMap(([k, v]) => [Object.assign(document.createElement("dt"), { textContent: k }), Object.assign(document.createElement("dd"), { textContent: v, className: "font-semibold" })]))
+      $("formula").replaceChildren(...a.lines.map((l) => Object.assign(document.createElement("p"), { textContent: l })))
+    }
+    box.addEventListener("input", update)
+    box.addEventListener("change", update)
+  }
+</script>

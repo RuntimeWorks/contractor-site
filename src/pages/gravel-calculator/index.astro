@@ -1,0 +1,9 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import MaterialsCalculator from "../../components/MaterialsCalculator.astro"
+import MaterialsNotes from "../../components/MaterialsNotes.astro"
+---
+<ToolPage title="Gravel calculator: cubic yards and tons" description="How much gravel or crushed stone to order for a driveway, path or base: cubic yards, tons and bags, with published weights and the formulas shown." h1="Gravel calculator" lead="How much gravel or crushed stone to order, in cubic yards and tons." crumb="Gravel" path="/gravel-calculator/">
+  <MaterialsCalculator slot="calculator" material="gravel-mixed" depth="4" depthUnit="in" bag="" heading="Work out your gravel" />
+  <MaterialsNotes />
+</ToolPage>

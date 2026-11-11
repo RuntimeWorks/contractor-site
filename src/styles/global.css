@@ -1,0 +1,186 @@
+/* One stylesheet for every page. Utilities come from Tailwind CSS 4, long text from @tailwindcss/typography, and every
+   value from tokens.css (Radix colour scales, Utopia type and space, Carbon motion, and the brand theme the founder
+   chose: the old site's navy, sand, white cards and fonts). Tailwind's own colour palette is switched off so nothing
+   outside the tokens can be used. */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@import "./tokens.css";
+
+/* The old site's three faces, self-hosted from its own files (SIL Open Font License, public/fonts/OFL.txt):
+   Archivo for headings (wide, heavy), Schibsted Grotesk for text, IBM Plex Mono for small labels and figures. */
+@font-face { font-family: "Archivo"; src: url("/fonts/archivo-vf.woff2") format("woff2"); font-weight: 800 900; font-stretch: 100% 125%; font-display: swap; }
+@font-face { font-family: "Schibsted Grotesk"; src: url("/fonts/schibsted-vf.woff2") format("woff2"); font-weight: 400 800; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("/fonts/plexmono-500.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("/fonts/plexmono-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  /* The old site's stacks (git 5b0fcac --body, --display, --mono), with GitHub Primer's system stack behind the text
+     face while it loads. */
+  --font-sans: "Schibsted Grotesk", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-display: "Archivo", "Arial Black", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  /* Reading measure. 1ch is the width of "0", wider than an average letter, so a measure in ch must be measured in
+     the face in use. In the system font 66ch ran to ~95 characters (impeccable "line-length") and 52ch to ~75; Schibsted
+     Grotesk holds 1.07 times as many characters per ch (canvas measure over this site's own paragraphs, 2026-11-07),
+     so 48ch is ~74: the top of the 45–75 range (Bringhurst; WCAG 1.4.8 says under 80). */
+  --container-measure: 48ch;
+  --container-page: 76rem;
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-accent-1: var(--accent-1);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-accent-4: var(--accent-4);
+  --color-accent-5: var(--accent-5);
+  --color-accent-6: var(--accent-6);
+  --color-accent-7: var(--accent-7);
+  --color-accent-8: var(--accent-8);
+  --color-accent-9: var(--accent-9);
+  --color-accent-10: var(--accent-10);
+  --color-accent-11: var(--accent-11);
+  --color-accent-12: var(--accent-12);
+  --color-accent-a3: var(--accent-a3);
+  --color-accent-a4: var(--accent-a4);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-gray-6: var(--gray-6);
+  --color-gray-7: var(--gray-7);
+  --color-gray-8: var(--gray-8);
+  --color-gray-9: var(--gray-9);
+  --color-gray-10: var(--gray-10);
+  --color-gray-11: var(--gray-11);
+  --color-gray-12: var(--gray-12);
+  --color-gray-a3: var(--gray-a3);
+  --color-gray-a6: var(--gray-a6);
+  --color-harbour: var(--harbour);
+  --color-harbour-2: var(--harbour-2);
+  --color-on-harbour: var(--on-harbour);
+  --color-on-harbour-2: var(--on-harbour-2);
+  --color-harbour-line: var(--harbour-line);
+  --color-harbour-ghost: var(--harbour-ghost);
+  --color-ink: var(--ink);
+  --color-white: var(--white);
+  --color-surface: var(--surface);
+  --color-sand: var(--sand);
+  --color-sand-2: var(--sand-2);
+  --color-line: var(--line);
+  --color-pass-3: var(--pass-3);
+  --color-pass-7: var(--pass-7);
+  --color-pass-11: var(--pass-11);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+  --shadow-shot: var(--shadow-shot);
+  --shadow-frame: var(--shadow-frame);
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+  --spacing-section: var(--space-2xl-3xl);
+  --spacing-gutter: var(--space-s-l);
+}
+
+@layer base {
+  html {
+    background: var(--color-background);
+    color: var(--gray-12);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+  /* impeccable's craft floor: theme the browser's own surfaces. */
+  ::selection { background: var(--accent-5); color: var(--accent-12); }
+  :focus-visible { outline: 2px solid var(--accent-9); outline-offset: 2px; border-radius: 2px; }
+  a { text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+  /* Apple, "The Details of UI Typography" (WWDC 2020): tighten large type; vercel-labs web guidelines: balance headings. */
+  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.01em; }
+  p, li, dd, figcaption { text-wrap: pretty; }
+  [id] { scroll-margin-top: 5rem; }
+}
+
+/* Long-text pages: the typography plugin's tested prose, in the token colours. */
+/* The old site's heading and card styles (git 5b0fcac: .hero h1, .sec-head h2, .card), used everywhere. */
+@utility heading { font-family: var(--font-display); font-weight: 800; font-stretch: 106%; letter-spacing: -0.02em; }
+@utility wordmark { font-family: var(--font-display); font-weight: 800; font-stretch: 125%; letter-spacing: 0.05em; text-transform: uppercase; }
+@utility card { background: var(--surface); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+/* Small labels (stages, field names, footer headings) at the old site's 14 px --fs-xs, in the text face and sentence
+   case: the old mono capitals read as a template (taste-skill "mono", "micro-label"). */
+@utility label { font-weight: 600; font-size: 0.875rem; line-height: 1.4; }
+
+@utility prose-brand {
+  --tw-prose-body: var(--gray-12);
+  --tw-prose-headings: var(--gray-12);
+  --tw-prose-lead: var(--gray-11);
+  --tw-prose-links: var(--accent-11);
+  --tw-prose-bold: var(--gray-12);
+  --tw-prose-counters: var(--gray-11);
+  --tw-prose-bullets: var(--gray-8);
+  --tw-prose-hr: var(--gray-6);
+  --tw-prose-quotes: var(--gray-12);
+  --tw-prose-quote-borders: var(--accent-7);
+  --tw-prose-captions: var(--gray-11);
+  --tw-prose-code: var(--gray-12);
+  --tw-prose-th-borders: var(--gray-7);
+  --tw-prose-td-borders: var(--gray-5);
+  /* The plugin's sizes are in em, so the Utopia base step scales the whole text block. */
+  font-size: var(--text-base);
+  line-height: 1.7;
+  max-width: var(--container-measure);
+  /* Headings in the theme's Archivo, as the old library pages set them. */
+  & :where(h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) { font-family: var(--font-display); font-weight: 800; font-stretch: 106%; letter-spacing: -0.02em; }
+  /* A page that sets max-w-none to give its tables and sheets the full width still keeps its words to the measure. */
+  & :where(p, ul, ol, dl, blockquote):not(:where([class~="not-prose"], [class~="not-prose"] *)) { max-width: var(--container-measure); }
+  /* The plugin prints a backtick before and after inline code; the old pages showed the code alone. */
+  & :where(code)::before, & :where(code)::after { content: none; }
+  /* The plugin also wraps a quote's first and last paragraph in curly quotes. Our quotes carry their own marks and end
+     with a <cite> paragraph, so the page showed two opening marks and a closing mark after the source (found in the
+     research-gates look round, 2026-11-07). */
+  & :where(blockquote p:first-of-type)::before, & :where(blockquote p:last-of-type)::after { content: none; }
+}
+
+/* Print: the free logs and records print without the site around them. A tool page prints only its sheets; the
+   calendar's "Print this sheet" prints only the sheet pressed. Wide sheets go landscape (CSS named pages). */
+@page { size: letter; margin: 0.5in; }
+@page landscape { size: letter landscape; margin: 0.4in; }
+@media print {
+  header[data-site], footer[data-site], [data-noprint] { display: none !important; }
+  html { background: #fff; color: #000; }
+  a { color: inherit; text-decoration: none; }
+  .sheet-landscape { page: landscape; }
+  body[data-tool] main :is([data-page-head], [data-page-foot], nav[aria-label="Breadcrumb"]) { display: none !important; }
+  body[data-tool] .prose > :not([data-sheet]) { display: none !important; }
+  body[data-print-only] [data-sheet]:not([data-print-target]) { display: none !important; }
+  [data-sheet] { break-inside: auto; }
+  [data-sheet] tr { break-inside: avoid; }
+}
+
+/* Motion (SPEC.md §7 station 10): only transform, only where it helps, and nothing under reduced motion.
+   - Section parts rise 24 px as they enter the screen, driven by the scroll itself (CSS scroll-driven animations,
+     Interop 2026; no script). Pictures don't rise (PurchaseRow's rule). Browsers without view() show them still.
+   - Pages change with a cross-document View Transition (Interop 2026), a short cross-fade.
+   - Controls answer the press (Button, active:scale 0.97) and linked cards lift 2 px on hover (taste-skill 2.5), both
+     only under motion-safe (Hallmark gate 27). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: var(--duration-slow); animation-timing-function: var(--ease-productive); }
+  @supports (animation-timeline: view()) {
+    /* Longhands on purpose: Lightning CSS 1.33 folds `animation` + `animation-timeline` into one shorthand,
+       `animation: linear both rise view()`, which Chrome 152 rejects, so no part ever moved (caught by taste-skill
+       inspect "still-page"; scripts/check.mjs now checks the rule survives the build). */
+    .rise { animation-name: rise; animation-timing-function: linear; animation-fill-mode: both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+  }
+}
+@keyframes rise { from { transform: translateY(24px); } to { transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,28 @@
+---
+// The shared "how it is worked out" and sources for the bulk materials pages, from src/lib/materials.ts.
+import { materials } from "../lib/materials"
+const weighed = Object.values(materials).flatMap((m) => (m.poundsPerCubicYard ? [{ label: m.label, pounds: m.poundsPerCubicYard.toLocaleString("en-US"), tons: (m.poundsPerCubicYard / 2000).toLocaleString("en-US", { maximumFractionDigits: 3 }) }] : []))
+---
+<h2 id="how">How the numbers are worked out</h2>
+<ul>
+  <li><strong>Volume</strong> = length × width × depth, with every measurement turned into feet first. Or the area in square feet × depth.</li>
+  <li><strong>Cubic yards</strong> = cubic feet ÷ 27, since a cubic yard is 3 ft × 3 ft × 3 ft.</li>
+  <li><strong>Tons</strong> = cubic yards × the material’s weight per cubic yard ÷ 2,000 (a US short ton is 2,000 lb).</li>
+  <li><strong>Bags</strong> = cubic feet ÷ the volume printed on one bag, rounded up to whole bags.</li>
+</ul>
+<h2 id="weights">Weight of a loose cubic yard</h2>
+<p>These are Caterpillar’s published loose weights. Caterpillar notes that weight changes with moisture, grain size and compaction, so ask your supplier for theirs before you order by the ton.</p>
+<table>
+  <caption class="sr-only">Loose weight of one cubic yard, by material</caption>
+  <thead><tr><th scope="col">Material</th><th scope="col">Pounds per cubic yard</th><th scope="col">Tons per cubic yard</th></tr></thead>
+  <tbody>
+    {weighed.map((m) => (<tr><th scope="row">{m.label}</th><td>{m.pounds}</td><td>{m.tons}</td></tr>))}
+  </tbody>
+</table>
+<p>Mulch has no weight here: it is sold by volume.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+  <li>Caterpillar, <a href="https://www.cat.com/en_US/articles/ci-articles/earthwork-volumes-reference-tables.html">Material Density Tables to Help Estimate Earthwork Volumes</a> (2021): loose weights per cubic yard.</li>
+  <li>NIST, <a href="https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-44">Handbook 44, Appendix C</a>: the short ton and the exact foot.</li>
+</ul>
+<p>This site is not connected with Caterpillar.</p>

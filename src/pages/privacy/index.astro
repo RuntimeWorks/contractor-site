@@ -1,0 +1,14 @@
+---
+import Base from "../../layouts/Base.astro"
+import { brand, site } from "../../data/brand"
+---
+<Base title={`Privacy · ${site.name}`} description="What this site collects: nothing you type into a calculator leaves your browser.">
+  <article class="mx-auto max-w-page px-gutter pt-12">
+    <h1 class="heading max-w-measure text-3xl text-gray-12">Privacy</h1>
+    <div class="prose prose-brand mt-8">
+      <p>The calculators run in your browser. What you type into them is not stored, not sent to us and not sent to anyone else.</p>
+      <p>The site sets no cookies, stores nothing on your device and loads nothing from other sites. Like every website, the server that delivers the pages keeps standard access records (such as the address that asked for a page and when); we don’t combine them with anything else.</p>
+      <p>Questions: <a href={`mailto:${brand.email}`}>{brand.email}</a>, {brand.legalName}, {brand.address.street}, {brand.address.city}, {brand.address.region} {brand.address.postal}, Canada.</p>
+    </div>
+  </article>
+</Base>

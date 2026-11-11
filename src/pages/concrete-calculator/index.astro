@@ -1,0 +1,60 @@
+---
+// A tool page in GOV.UK's content pattern (GOLD-STANDARD.md §6: a reading column, no hero picture, no buttons above
+// the answer, no motion). Every number on it comes from a source named on the page.
+import Base from "../../layouts/Base.astro"
+import Breadcrumb from "../../components/Breadcrumb.astro"
+import ConcreteCalculator from "../../components/ConcreteCalculator.astro"
+import { bags, ALLOWANCE_MAX, ALLOWANCE_MIN } from "../../lib/concrete"
+import { brand, site } from "../../data/brand"
+
+const title = "Concrete calculator: cubic yards and bags"
+const description = "How much concrete to order for a slab, footing, wall, column, post hole or round slab: cubic yards, cubic meters and 40 to 90 lb bags, with the formulas and sources shown."
+const jsonLd = [
+  { "@context": "https://schema.org", "@type": "WebApplication", name: "Concrete calculator", url: `${site.url}/concrete-calculator/`, applicationCategory: "UtilitiesApplication", operatingSystem: "Any (web browser)", isAccessibleForFree: true, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, publisher: { "@type": "Organization", name: brand.legalName, url: brand.companyUrl } },
+  { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: site.name, item: `${site.url}/` }, { "@type": "ListItem", position: 2, name: "Concrete calculator", item: `${site.url}/concrete-calculator/` }] },
+]
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <article class="mx-auto max-w-page px-gutter pt-8">
+    <Breadcrumb trail={[{ href: "/", label: "Calculators" }, { label: "Concrete" }]} />
+    <h1 class="heading mt-6 max-w-measure text-3xl text-gray-12 sm:text-4xl">Concrete calculator</h1>
+    <p class="mt-4 max-w-measure text-lg text-gray-11">How much concrete to order for a slab, footing, wall, column, post hole or round slab, in cubic yards and in bags.</p>
+
+    <ConcreteCalculator />
+
+    <div class="prose prose-brand">
+      <h2 id="how">How the numbers are worked out</h2>
+      <ul>
+        <li><strong>Slab, footing or wall:</strong> length × width × thickness.</li>
+        <li><strong>Round column or post hole:</strong> π × (diameter ÷ 2)² × depth.</li>
+        <li><strong>Round slab or tube:</strong> π × ((outer diameter ÷ 2)² − (inner diameter ÷ 2)²) × height. A solid round slab has an inner diameter of 0.</li>
+        <li><strong>Cubic yards</strong> = cubic feet ÷ 27, since a cubic yard is 3 ft × 3 ft × 3 ft. <strong>Cubic meters</strong> = cubic feet × 0.028316846592.</li>
+        <li><strong>Bags</strong> = the volume to order ÷ one bag’s yield, rounded up, because a store sells whole bags.</li>
+      </ul>
+      <p>Measurements in inches, yards, meters or centimeters are converted with the exact definitions: 1 inch = 2.54 cm, 1 foot = 0.3048 m and 1 yard = 0.9144 m (NIST).</p>
+
+      <h2 id="bags">How much one bag makes</h2>
+      <p>These are the yields QUIKRETE® prints for its Concrete Mix (No. 1101). A bag of a different mix or brand can make more or less, so check its label.</p>
+      <table>
+        <caption class="sr-only">Yield of one bag of QUIKRETE Concrete Mix, by bag weight</caption>
+        <thead><tr><th scope="col">Bag</th><th scope="col">Makes about</th><th scope="col">Bags in a cubic yard</th></tr></thead>
+        <tbody>
+          {bags.map((b) => (
+            <tr><th scope="row">{b.pounds} lb</th><td>{b.cubicFeet} ft³</td><td>{Math.ceil(27 / b.cubicFeet - 1e-9)}</td></tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2 id="extra">How much extra to order</h2>
+      <p>The National Ready Mixed Concrete Association advises an allowance of {ALLOWANCE_MIN} to {ALLOWANCE_MAX} percent over the plan dimensions, for waste, over-digging and ground that is lower than drawn. The calculator starts at 5 percent; change it to suit the job.</p>
+
+      <h2 id="sources">Sources</h2>
+      <ul>
+        <li>QUIKRETE®, <a href="https://www.quikrete.com/pdfs/data_sheet-concrete%20mix%201101.pdf">Concrete Mix No. 1101 data sheet</a>: yield of 40, 50, 60, 80 and 90 lb bags.</li>
+        <li>National Ready Mixed Concrete Association, <a href="https://www.nrmca.org/wp-content/uploads/2021/01/08pr.pdf">Concrete in Practice 8: Discrepancies in Yield</a>: the 4 to 10 percent allowance.</li>
+        <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch, foot and yard.</li>
+      </ul>
+      <p>QUIKRETE® is a trademark of its owner. This site is not connected with QUIKRETE or NRMCA.</p>
+    </div>
+  </article>
+</Base>

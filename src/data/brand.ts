@@ -1,0 +1,51 @@
+// The one place this site's facts live. Pages, the footer, the sitemap and the structured data read from here.
+//
+// The site's own name and address are working values until the founder picks a name (naming follows the founder's
+// check order: trademarks, companies, domains, handles; memory name-hunt-check-order). Change `site` here and the
+// whole site follows. The publisher's facts are the company's own (copied from ~/boldsand-policies src/data/brand.ts,
+// sources in projects/boldsand-com/PLAN.md §1–§2).
+
+export const site = {
+  /** Working name, shown beside the Boldsand mark. */
+  name: "Contractor calculators",
+  /** Working address: a subdomain of the company's own boldsand.com, so no new domain is needed to start. */
+  url: "https://contractors.boldsand.com",
+  description: "Free calculators for contractors: concrete in cubic yards and bags, and square footage, with every formula and source shown.",
+}
+
+export const brand = {
+  name: "Boldsand",
+  legalName: "Boldsand Software Inc.",
+  url: site.url,
+  companyUrl: "https://boldsand.com",
+  email: "deya@boldsand.com",
+  address: { street: "C 505 University Ave", city: "Charlottetown", region: "PE", regionName: "Prince Edward Island", postal: "C1A 9S3", country: "CA" },
+  // Colour inputs for Radix's palette generator (scripts/gen-tokens.ts). The founder's approved Boldsand theme, kept
+  // as-is (GOLD-STANDARD.md §2 station 4b: a new site keeps the approved look unless the founder asks for another):
+  // accent = the harbour navy; gray = the theme's blue grey; light background = paper; dark background = ink.
+  colors: { accent: "#0F2B47", gray: "#56616D", backgroundLight: "#FBF8F2", backgroundDark: "#0C1723", markSand: "#EEE4D1" },
+  theme: {
+    harbour: "#0F2B47", harbour2: "#173A5E", onHarbour: "#EDE5D4", onHarbour2: "#B4C1CF",
+    sand: "#EEE4D1", sand2: "#E2D4B8", paper: "#FBF8F2", white: "#FFFFFF", ink: "#0C1723", pass: "#17663F",
+    shadowCard: "0 1px 2px rgba(12,23,35,.08), 0 18px 40px -28px rgba(12,23,35,.35)", shadowCardHover: "0 1px 2px rgba(12,23,35,.08), 0 28px 50px -28px rgba(12,23,35,.45)",
+    shadowShot: "0 18px 30px -18px rgba(12,23,35,.5)", shadowFrame: "0 40px 70px -30px rgba(4,14,26,.7)",
+    radius: "14px", radiusSmall: "10px",
+  },
+} as const
+
+export interface Tool {
+  href: string
+  name: string
+  /** What it answers, in one sentence. */
+  summary: string
+}
+
+export const tools: Tool[] = [
+  { href: "/concrete-calculator/", name: "Concrete calculator", summary: "Cubic yards, cubic meters and the number of 40, 50, 60, 80 and 90 lb bags for slabs, footings, walls, columns, post holes and tubes." },
+  { href: "/square-footage-calculator/", name: "Square footage calculator", summary: "Square feet, square yards, square meters and acres for rooms, lots and odd shapes, with cut-outs taken away." },
+  { href: "/gravel-calculator/", name: "Gravel calculator", summary: "Cubic yards and tons of gravel or crushed stone for a driveway, path or base, from published weights." },
+  { href: "/mulch-calculator/", name: "Mulch calculator", summary: "Cubic yards of mulch for a bed, or the number of bags by the volume printed on them." },
+  { href: "/topsoil-calculator/", name: "Topsoil calculator", summary: "Cubic yards and tons of topsoil for a lawn or garden bed." },
+  { href: "/cubic-yard-calculator/", name: "Cubic yard calculator", summary: "Cubic yards from length, width and depth in any unit, with the weight for gravel, stone, sand and topsoil." },
+  { href: "/board-foot-calculator/", name: "Board foot calculator", summary: "Board feet of lumber for one piece or a whole order, and what it costs." },
+]

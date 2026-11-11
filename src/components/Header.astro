@@ -1,0 +1,43 @@
+---
+// Site header in boldsand.com's shape (~/boldsand-policies Header.astro): the mark and wordmark over a hairline, the
+// tools as links. A reading and tool site (GOLD-STANDARD.md §6, GOV.UK pattern), so there is no call-to-action button.
+// Under 640 px the links move into a native <details> disclosure (WAI-ARIA APG disclosure pattern, no script needed).
+import Mark from "./Mark.astro"
+import { brand, site } from "../data/brand"
+
+const links = [{ href: "/", label: "All calculators" }, { href: "/about/", label: "About" }]
+---
+<header data-site class="sticky top-0 z-30 border-b border-line bg-background">
+  <div class="mx-auto flex h-[68px] max-w-page items-center gap-6 px-gutter">
+    <a href="/" class="mr-auto flex min-h-11 items-center gap-2.5 text-gray-12 no-underline">
+      <Mark class="size-[30px]" />
+      <span class="wordmark text-base">{brand.name}</span>
+      <span class="hidden text-sm font-semibold text-gray-11 md:inline">{site.name}</span>
+    </a>
+    <nav aria-label="Main" class="flex items-center gap-6">
+      <ul class="hidden items-center gap-6 text-sm font-semibold sm:flex">
+        {links.map((l) => (
+          <li><a href={l.href} class="inline-flex min-h-11 items-center whitespace-nowrap text-gray-11 no-underline transition-colors duration-fast ease-productive hover:text-gray-12">{l.label}</a></li>
+        ))}
+      </ul>
+      <details class="group relative sm:hidden" data-menu>
+        <summary class="inline-flex min-h-11 cursor-pointer list-none items-center rounded-control border-[1.5px] border-gray-12 px-4 text-sm font-bold text-gray-12 [&::-webkit-details-marker]:hidden">Menu</summary>
+        <div class="card absolute right-0 top-full mt-2 w-60 p-2">
+          <ul class="grid text-base">
+            {links.map((l) => (
+              <li><a href={l.href} class="flex min-h-11 items-center rounded-md px-3 text-gray-12 no-underline hover:bg-gray-a3">{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>
+<script>
+  // Close the phone menu after a link is followed or Escape is pressed (APG disclosure keyboard contract).
+  const menu = document.querySelector<HTMLDetailsElement>("details[data-menu]")
+  menu?.addEventListener("click", (e) => { if ((e.target as Element).closest("a")) menu.open = false })
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu?.open) { menu.open = false; menu.querySelector("summary")?.focus() }
+  })
+</script>

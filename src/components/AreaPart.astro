@@ -1,0 +1,60 @@
+---
+// One part of the square footage calculator: a fieldset with its own legend (WAI-ARIA: a group named by its legend).
+// With `n`, the part is rendered on the server with ids p{n}-*; without it, it sits in the <template> and the script
+// gives each copy its own ids when it is added.
+import { lengthUnits } from "../lib/units"
+
+interface Props { n?: number; values?: Record<string, string> }
+const { n, values = {} } = Astro.props
+const id = (k: string) => (n ? `p${n}-${k}` : undefined)
+
+const shapes = [
+  { value: "rectangle", label: "Rectangle or square" },
+  { value: "circle", label: "Circle" },
+  { value: "triangle", label: "Triangle" },
+  { value: "trapezoid", label: "Trapezoid" },
+]
+// [name, label, shape]
+const dims = [
+  ["length", "Length", "rectangle"],
+  ["width", "Width", "rectangle"],
+  ["diameter", "Diameter", "circle"],
+  ["base", "Base", "triangle"],
+  ["theight", "Height", "triangle"],
+  ["sideA", "Side a (one parallel side)", "trapezoid"],
+  ["sideB", "Side b (the other parallel side)", "trapezoid"],
+  ["zheight", "Height (between the two sides)", "trapezoid"],
+] as const
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
+---
+<fieldset class="grid gap-4 rounded-control border border-gray-6 p-4" data-part>
+  <legend class="px-1 font-semibold text-gray-12" data-legend>Part {n ?? 1}</legend>
+  <div class="grid gap-1 text-sm sm:max-w-sm">
+    <label class="font-medium text-gray-12" for={id("shape")} data-for="shape">Shape</label>
+    <select id={id("shape")} data-k="shape" class={select}>
+      {shapes.map((s) => <option value={s.value}>{s.label}</option>)}
+    </select>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    {dims.map(([name, label, shape]) => (
+      <div class="grid gap-1 text-sm" data-shape={shape} hidden={shape !== "rectangle"}>
+        <label class="font-medium text-gray-12" for={id(name)} data-for={name}>{label}</label>
+        <div class="flex gap-2">
+          <input id={id(name)} data-k={name} type="text" inputmode="decimal" value={values[name] ?? ""} autocomplete="off" class={field} />
+          <select id={id(`${name}-unit`)} data-u={name} aria-label={`${label} unit`} class={select}>
+            {lengthUnits.map((u) => <option value={u.value} selected={u.value === "ft"}>{u.label}</option>)}
+          </select>
+        </div>
+      </div>
+    ))}
+    <div class="grid gap-1 text-sm">
+      <label class="font-medium text-gray-12" for={id("qty")} data-for="qty">How many</label>
+      <input id={id("qty")} data-k="qty" type="text" inputmode="numeric" value="1" autocomplete="off" class={field} />
+    </div>
+  </div>
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <label class="flex min-h-11 items-center gap-3 text-sm"><input data-k="subtract" type="checkbox" class="size-5 accent-accent-9" />Take this away (a cut-out)</label>
+    <button type="button" data-remove hidden={n === 1} aria-label={`Remove part ${n ?? 1}`} class="inline-flex min-h-11 items-center px-2 text-sm font-semibold whitespace-nowrap text-accent-11 underline underline-offset-4 active:text-accent-12">Remove this part</button>
+  </div>
+</fieldset>

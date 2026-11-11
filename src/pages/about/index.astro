@@ -1,0 +1,18 @@
+---
+import Base from "../../layouts/Base.astro"
+import { brand, site } from "../../data/brand"
+---
+<Base title={`About ${site.name}`} description="Who makes these calculators, where their numbers come from, and how to report a mistake.">
+  <article class="mx-auto max-w-page px-gutter pt-12">
+    <h1 class="heading max-w-measure text-3xl text-gray-12">About these calculators</h1>
+    <div class="prose prose-brand mt-8">
+      <p>{site.name} is made by <a href={brand.companyUrl}>{brand.legalName}</a>, a software company in {brand.address.city}, {brand.address.regionName}, Canada.</p>
+      <h2>Where the numbers come from</h2>
+      <p>Every calculator uses plain geometry and exact unit definitions, and says on its page which outside figures it uses and where they were published: bag yields from the manufacturer’s data sheet, allowances from the industry’s own guidance, units from NIST. The arithmetic is tested against worked examples before each release.</p>
+      <h2>Found a mistake?</h2>
+      <p>Write to <a href={`mailto:${brand.email}`}>{brand.email}</a> with the page, what you entered and what you expected. A confirmed mistake is fixed.</p>
+      <h2>What these calculators are not</h2>
+      <p>They estimate quantities. They don’t replace an engineer’s design, a building code or a supplier’s quote.</p>
+    </div>
+  </article>
+</Base>

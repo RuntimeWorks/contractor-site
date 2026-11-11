@@ -1,0 +1,9 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import MaterialsCalculator from "../../components/MaterialsCalculator.astro"
+import MaterialsNotes from "../../components/MaterialsNotes.astro"
+---
+<ToolPage title="Mulch calculator: cubic yards and bags" description="How much mulch to buy for a bed: cubic yards, cubic feet and the number of bags, with the formulas shown." h1="Mulch calculator" lead="How much mulch to buy for a bed, in cubic yards or in bags." crumb="Mulch" path="/mulch-calculator/">
+  <MaterialsCalculator slot="calculator" material="mulch" depth="3" depthUnit="in" bag="2" heading="Work out your mulch" />
+  <MaterialsNotes />
+</ToolPage>

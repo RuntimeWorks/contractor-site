@@ -1,0 +1,9 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import MaterialsCalculator from "../../components/MaterialsCalculator.astro"
+import MaterialsNotes from "../../components/MaterialsNotes.astro"
+---
+<ToolPage title="Topsoil calculator: cubic yards and tons" description="How much topsoil to order for a lawn or garden bed: cubic yards, tons and bags, with published weights and the formulas shown." h1="Topsoil calculator" lead="How much topsoil to order for a lawn or a bed, in cubic yards, tons or bags." crumb="Topsoil" path="/topsoil-calculator/">
+  <MaterialsCalculator slot="calculator" material="topsoil" depth="4" depthUnit="in" bag="" heading="Work out your topsoil" />
+  <MaterialsNotes />
+</ToolPage>

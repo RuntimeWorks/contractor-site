@@ -1,0 +1,76 @@
+---
+// Board feet of lumber. The rule and its words are src/lib/boardfeet.ts (source there), tested in tests/calc.test.ts.
+// Same pattern as the other calculators: native fields, the first answer rendered on the server from the same function
+// the browser runs, announced politely (role="status").
+import { lengthUnits, type LengthUnit } from "../lib/units"
+import { explainBoards } from "../lib/boardfeet"
+
+const dims: [string, string, string, LengthUnit, string][] = [
+  ["thick", "Thickness", "2", "in", "Use the size the lumberyard prices by."],
+  ["wide", "Width", "6", "in", ""],
+  ["long", "Length", "8", "ft", ""],
+]
+const first = explainBoards({ value: 2, unit: "in" }, { value: 6, unit: "in" }, { value: 8, unit: "ft" }, 1, null)
+if (!first.ok) throw new Error(`The page's starting values must give an answer: ${first.message}`)
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
+---
+<section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
+  <h2 id="calc-h2" class="heading text-2xl text-gray-12">Work out board feet</h2>
+  <p class="mt-2 max-w-measure text-gray-11">The answer updates as you type. Nothing you enter is stored or sent anywhere.</p>
+  <div role="group" aria-labelledby="calc-h2" class="mt-6 card p-4 sm:p-6" data-boards>
+    <div class="grid items-start gap-4 sm:grid-cols-2">
+      {dims.map(([id, label, value, unit, hint]) => (
+        <div class="grid gap-1 text-sm">
+          <label for={id} class="font-medium text-gray-12">{label}</label>
+          <div class="flex gap-2">
+            <input id={id} type="text" inputmode="decimal" value={value} autocomplete="off" aria-describedby={hint ? `${id}-hint` : undefined} class={field} />
+            <select id={`${id}-unit`} aria-label={`${label} unit`} class={select}>
+              {lengthUnits.map((u) => <option value={u.value} selected={u.value === unit}>{u.label}</option>)}
+            </select>
+          </div>
+          {hint && <p id={`${id}-hint`} class="text-gray-11">{hint}</p>}
+        </div>
+      ))}
+      <div class="grid gap-1 text-sm">
+        <label for="pieces" class="font-medium text-gray-12">How many pieces</label>
+        <input id="pieces" type="text" inputmode="numeric" value="1" autocomplete="off" class={field} />
+      </div>
+      <div class="grid gap-1 text-sm">
+        <label for="bfprice" class="font-medium text-gray-12">Price per board foot ($), optional</label>
+        <input id="bfprice" type="text" inputmode="decimal" value="" autocomplete="off" class={field} />
+      </div>
+    </div>
+    <div class="mt-6 rounded-control bg-sand p-5 text-gray-12" role="status" aria-live="polite">
+      <p class="text-xl font-semibold" data-o="headline">{first.headline}</p>
+      <p class="mt-2 font-medium" data-o="cost" hidden></p>
+      <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { explainBoards } from "../lib/boardfeet"
+  import { readNumber, type LengthUnit } from "../lib/units"
+
+  const box = document.querySelector<HTMLElement>("[data-boards]")
+  if (box) {
+    const $ = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)!
+    const val = (id: string) => readNumber(box.querySelector<HTMLInputElement>(`#${id}`)!.value)
+    const len = (id: string) => {
+      const value = val(id)
+      return value === null ? null : { value, unit: box.querySelector<HTMLSelectElement>(`#${id}-unit`)!.value as LengthUnit }
+    }
+    const update = () => {
+      const a = explainBoards(len("thick"), len("wide"), len("long"), val("pieces"), val("bfprice"))
+      const cost = $("cost")
+      if (!a.ok) { $("headline").textContent = a.message; $("formula").replaceChildren(); cost.hidden = true; return }
+      $("headline").textContent = a.headline
+      cost.hidden = !a.cost
+      cost.textContent = a.cost ?? ""
+      $("formula").replaceChildren(...a.lines.map((l) => Object.assign(document.createElement("p"), { textContent: l })))
+    }
+    box.addEventListener("input", update)
+    box.addEventListener("change", update)
+  }
+</script>

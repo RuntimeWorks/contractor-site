@@ -1,0 +1,9 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import MaterialsCalculator from "../../components/MaterialsCalculator.astro"
+import MaterialsNotes from "../../components/MaterialsNotes.astro"
+---
+<ToolPage title="Cubic yard calculator: from feet, inches or meters" description="Cubic yards from length, width and depth in any unit, with tons for gravel, stone, sand and topsoil, and bags, formulas shown." h1="Cubic yard calculator" lead="Cubic yards from length, width and depth, in any unit, with the weight for common materials." crumb="Cubic yards" path="/cubic-yard-calculator/">
+  <MaterialsCalculator slot="calculator" material="other" depth="6" depthUnit="in" bag="" heading="Work out cubic yards" />
+  <MaterialsNotes />
+</ToolPage>

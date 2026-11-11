@@ -1,0 +1,127 @@
+---
+// The concrete calculator. The rule and its words are src/lib/concrete.ts (sources there), tested in
+// tests/calc.test.ts. Native form controls only, after boldsand.com's Florida calculator: a radio group in a fieldset
+// for the shape, number fields with a unit select beside each, and the answer announced politely as it changes
+// (role="status", WAI-ARIA). The first answer is rendered on the server from the same function the browser runs, so
+// the page has its answer before any script and never shifts on load.
+import { lengthUnits, type LengthUnit } from "../lib/units"
+import { ALLOWANCE_DEFAULT, ALLOWANCE_MAX, ALLOWANCE_MIN, bags, explain } from "../lib/concrete"
+
+const shapes = [
+  { value: "slab", label: "Slab, footing or wall" },
+  { value: "column", label: "Round column or post hole" },
+  { value: "tube", label: "Round slab or tube" },
+]
+// [field id, label, default value, default unit, hint, shape]
+const dims: [string, string, string, LengthUnit, string, string][] = [
+  ["length", "Length", "10", "ft", "", "slab"],
+  ["width", "Width", "10", "ft", "For a wall, its thickness.", "slab"],
+  ["thickness", "Thickness or height", "4", "in", "For a footing, its depth; for a wall, its height.", "slab"],
+  ["diameter", "Diameter", "12", "in", "", "column"],
+  ["depth", "Depth or height", "4", "ft", "", "column"],
+  ["outer", "Outer diameter", "8", "ft", "", "tube"],
+  ["inner", "Inner diameter", "0", "ft", "0 for a solid round slab.", "tube"],
+  ["height", "Thickness or height", "4", "in", "", "tube"],
+]
+const slab = dims.filter((d) => d[5] === "slab").map(([, , v, u]) => ({ value: Number(v), unit: u }))
+const first = explain({ shape: "slab", lengths: slab, quantity: 1, allowance: ALLOWANCE_DEFAULT })
+if (!first.ok) throw new Error(`The page's starting values must give an answer: ${first.message}`)
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
+---
+<section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
+  <h2 id="calc-h2" class="heading text-2xl text-gray-12">Work out your pour</h2>
+  <p class="mt-2 max-w-measure text-gray-11">The answer updates as you type. Nothing you enter is stored or sent anywhere.</p>
+
+  <div role="group" aria-labelledby="calc-h2" class="mt-6 card p-4 sm:p-6" data-concrete>
+    <fieldset class="grid gap-1">
+      <legend class="mb-2 font-semibold text-gray-12">What are you pouring?</legend>
+      {shapes.map((s, i) => (
+        <label class="flex min-h-11 items-center gap-3"><input type="radio" name="shape" value={s.value} checked={i === 0} class="size-5 accent-accent-9" />{s.label}</label>
+      ))}
+    </fieldset>
+
+    <div class="mt-6 grid items-start gap-4 sm:grid-cols-2">
+      {dims.map(([id, label, value, unit, hint, shape]) => (
+        <div class="grid gap-1 text-sm" data-shape={shape} hidden={shape !== "slab"}>
+          <label for={id} class="font-medium text-gray-12">{label}</label>
+          <div class="flex gap-2">
+            <input id={id} type="text" inputmode="decimal" value={value} autocomplete="off" aria-describedby={hint ? `${id}-hint` : undefined} class={field} />
+            <select id={`${id}-unit`} aria-label={`${label} unit`} class={select}>
+              {lengthUnits.map((u) => <option value={u.value} selected={u.value === unit}>{u.label}</option>)}
+            </select>
+          </div>
+          {hint && <p id={`${id}-hint`} class="text-gray-11">{hint}</p>}
+        </div>
+      ))}
+      <div class="grid gap-1 text-sm">
+        <label for="qty" class="font-medium text-gray-12">How many</label>
+        <input id="qty" type="text" inputmode="numeric" value="1" autocomplete="off" class={field} />
+      </div>
+      <div class="grid gap-1 text-sm">
+        <label for="allow" class="font-medium text-gray-12">Extra to order (%)</label>
+        <input id="allow" type="text" inputmode="decimal" value={String(ALLOWANCE_DEFAULT)} autocomplete="off" aria-describedby="allow-hint" class={field} />
+        <p id="allow-hint" class="text-gray-11">The ready-mix industry advises {ALLOWANCE_MIN} to {ALLOWANCE_MAX}% over plan for waste and uneven ground (NRMCA).</p>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-control bg-sand p-5 text-gray-12" role="status" aria-live="polite">
+      <p class="text-xl font-semibold" data-o="headline">{first.headline}</p>
+      <p class="mt-1 text-gray-11" data-o="plan">{first.plan}</p>
+      <table class="mt-4 w-full text-left text-sm tabular-nums">
+        <caption class="sr-only">Bags of concrete mix needed, by bag size</caption>
+        <thead>
+          <tr class="border-b border-gray-7"><th scope="col" class="py-2 pr-3 font-semibold">Bag size</th><th scope="col" class="py-2 pr-3 text-right font-semibold">Bags</th><th scope="col" class="py-2 text-right font-semibold">Total weight</th></tr>
+        </thead>
+        <tbody>
+          {bags.map((b, i) => (
+            <tr class="border-b border-gray-6 last:border-0"><th scope="row" class="py-2 pr-3 font-normal">{b.pounds} lb</th><td class="py-2 pr-3 text-right font-semibold" data-bag={b.pounds}>{first.bags[i].count}</td><td class="py-2 text-right" data-weight={b.pounds}>{first.bags[i].weight}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="mt-3 text-sm text-gray-11">Bag yields are QUIKRETE® Concrete Mix’s, from its data sheet (<a href="#bags" class="underline underline-offset-4">table below</a>). Other mixes yield differently: check the bag.</p>
+      <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { explain, shapeFields, type Shape } from "../lib/concrete"
+  import { readNumber, type LengthUnit } from "../lib/units"
+
+  const box = document.querySelector<HTMLElement>("[data-concrete]")
+  if (box) {
+    const $ = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)!
+    const len = (id: string) => {
+      const value = readNumber(box.querySelector<HTMLInputElement>(`#${id}`)!.value)
+      const unit = box.querySelector<HTMLSelectElement>(`#${id}-unit`)!.value as LengthUnit
+      return value === null ? null : { value, unit }
+    }
+    const update = () => {
+      const shape = box.querySelector<HTMLInputElement>('input[name="shape"]:checked')!.value as Shape
+      box.querySelectorAll<HTMLElement>("[data-shape]").forEach((el) => (el.hidden = el.dataset.shape !== shape))
+      const a = explain({
+        shape,
+        lengths: shapeFields[shape].map(len),
+        quantity: readNumber(box.querySelector<HTMLInputElement>("#qty")!.value),
+        allowance: readNumber(box.querySelector<HTMLInputElement>("#allow")!.value),
+      })
+      if (!a.ok) {
+        $("headline").textContent = a.message
+        $("plan").textContent = ""
+        $("formula").replaceChildren()
+        box.querySelectorAll<HTMLElement>("[data-bag], [data-weight]").forEach((c) => (c.textContent = "—"))
+        return
+      }
+      $("headline").textContent = a.headline
+      $("plan").textContent = a.plan
+      for (const b of a.bags) {
+        box.querySelector(`[data-bag="${b.pounds}"]`)!.textContent = b.count
+        box.querySelector(`[data-weight="${b.pounds}"]`)!.textContent = b.weight
+      }
+      $("formula").replaceChildren(...a.lines.map((l) => Object.assign(document.createElement("p"), { textContent: l })))
+    }
+    box.addEventListener("input", update)
+    box.addEventListener("change", update)
+  }
+</script>

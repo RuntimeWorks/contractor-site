@@ -1,0 +1,127 @@
+---
+// The square footage calculator. The rule and its words are src/lib/area.ts, tested in tests/calc.test.ts. Each part
+// is a fieldset (AreaPart.astro); parts are added from a <template> and removed with a labelled button, focus moving
+// to the neighbouring part (WAI-ARIA APG). The first part and its answer are rendered on the server from the same
+// function the browser runs, so the page never shifts on load. The total is announced politely (role="status").
+import AreaPart from "./AreaPart.astro"
+import { explainArea } from "../lib/area"
+
+const firstValues = { length: "12", width: "10" }
+const first = explainArea([{ shape: "rectangle", lengths: [{ value: 12, unit: "ft" }, { value: 10, unit: "ft" }], quantity: 1, subtract: false }], 0, null)
+if (!first.ok) throw new Error(`The page's starting values must give an answer: ${first.message}`)
+const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
+---
+<section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
+  <h2 id="calc-h2" class="heading text-2xl text-gray-12">Work out the area</h2>
+  <p class="mt-2 max-w-measure text-gray-11">Add one part for each room or piece of the shape, and take away cut-outs such as a kitchen island. The answer updates as you type; nothing is stored or sent anywhere.</p>
+
+  <div role="group" aria-labelledby="calc-h2" class="mt-6 card p-4 sm:p-6" data-area>
+    <div class="grid gap-6" data-parts><AreaPart n={1} values={firstValues} /></div>
+    <button type="button" data-add class="mt-6 inline-flex min-h-11 items-center rounded-control border-[1.5px] border-gray-12 px-5 text-sm font-bold whitespace-nowrap text-gray-12 transition duration-fast ease-productive hover:bg-gray-a3 motion-safe:active:scale-[0.97]">Add another part</button>
+
+    <div class="mt-6 grid items-start gap-4 sm:grid-cols-2">
+      <div class="grid gap-1 text-sm">
+        <label for="extra" class="font-medium text-gray-12">Extra (%), optional</label>
+        <input id="extra" type="text" inputmode="decimal" value="0" autocomplete="off" aria-describedby="extra-hint" class={field} />
+        <p id="extra-hint" class="text-gray-11">For material cut to fit, such as flooring or tile. Use the figure your supplier or the product’s instructions give.</p>
+      </div>
+      <div class="grid gap-1 text-sm">
+        <label for="price" class="font-medium text-gray-12">Price per square foot ($), optional</label>
+        <input id="price" type="text" inputmode="decimal" value="" autocomplete="off" class={field} />
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-control bg-sand p-5 text-gray-12" role="status" aria-live="polite">
+      <p class="text-xl font-semibold" data-o="headline">{first.headline}</p>
+      <dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-sm" data-o="units">
+        {first.rows.map(([k, v]) => (<><dt>{k}</dt><dd class="font-semibold">{v}</dd></>))}
+      </dl>
+      <p class="mt-3 font-medium" data-o="cost" hidden></p>
+      <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
+    </div>
+  </div>
+
+  <template id="part-template"><AreaPart /></template>
+</section>
+
+<script>
+  import { explainArea, partFields, type Part, type RawPart } from "../lib/area"
+  import { readNumber, type LengthUnit } from "../lib/units"
+
+  const box = document.querySelector<HTMLElement>("[data-area]")
+  const template = document.querySelector<HTMLTemplateElement>("#part-template")
+  if (box && template) {
+    const list = box.querySelector<HTMLElement>("[data-parts]")!
+    const $ = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)!
+    let made = list.querySelectorAll("[data-part]").length
+
+    // Every part's legend and remove button say its number; the only part left can't be removed.
+    const renumber = () => {
+      const parts = [...list.querySelectorAll<HTMLElement>("[data-part]")]
+      parts.forEach((p, i) => {
+        p.querySelector("[data-legend]")!.textContent = `Part ${i + 1}`
+        const rm = p.querySelector<HTMLButtonElement>("[data-remove]")!
+        rm.setAttribute("aria-label", `Remove part ${i + 1}`)
+        rm.hidden = parts.length === 1
+      })
+    }
+    const addPart = () => {
+      const node = template.content.firstElementChild!.cloneNode(true) as HTMLElement
+      const n = ++made
+      node.querySelectorAll<HTMLElement>("[data-k], [data-u]").forEach((el) => (el.id = `p${n}-${el.dataset.k ?? `${el.dataset.u}-unit`}`))
+      node.querySelectorAll<HTMLLabelElement>("label[data-for]").forEach((l) => (l.htmlFor = `p${n}-${l.dataset.for}`))
+      list.append(node)
+      renumber()
+      return node
+    }
+    const read = (part: HTMLElement): RawPart => {
+      const shape = part.querySelector<HTMLSelectElement>('[data-k="shape"]')!.value as Part["shape"]
+      part.querySelectorAll<HTMLElement>("[data-shape]").forEach((d) => (d.hidden = d.dataset.shape !== shape))
+      return {
+        shape,
+        lengths: partFields[shape].map((name) => {
+          const value = readNumber(part.querySelector<HTMLInputElement>(`[data-k="${name}"]`)!.value)
+          const unit = part.querySelector<HTMLSelectElement>(`[data-u="${name}"]`)!.value as LengthUnit
+          return value === null ? null : { value, unit }
+        }),
+        quantity: readNumber(part.querySelector<HTMLInputElement>('[data-k="qty"]')!.value),
+        subtract: part.querySelector<HTMLInputElement>('[data-k="subtract"]')!.checked,
+      }
+    }
+    const update = () => {
+      const a = explainArea(
+        [...list.querySelectorAll<HTMLElement>("[data-part]")].map(read),
+        readNumber(box.querySelector<HTMLInputElement>("#extra")!.value),
+        readNumber(box.querySelector<HTMLInputElement>("#price")!.value),
+      )
+      const cost = $("cost")
+      if (!a.ok) {
+        $("headline").textContent = a.message
+        $("units").replaceChildren(); $("formula").replaceChildren(); cost.hidden = true
+        return
+      }
+      $("headline").textContent = a.headline
+      $("units").replaceChildren(...a.rows.flatMap(([k, v]) => [Object.assign(document.createElement("dt"), { textContent: k }), Object.assign(document.createElement("dd"), { textContent: v, className: "font-semibold" })]))
+      cost.hidden = !a.cost
+      cost.textContent = a.cost ?? ""
+      $("formula").replaceChildren(...a.lines.map((l) => Object.assign(document.createElement("p"), { textContent: l })))
+    }
+
+    box.addEventListener("input", update)
+    box.addEventListener("change", update)
+    box.querySelector("[data-add]")!.addEventListener("click", () => {
+      addPart().querySelector<HTMLSelectElement>('[data-k="shape"]')!.focus()
+      update()
+    })
+    list.addEventListener("click", (e) => {
+      const rm = (e.target as Element).closest<HTMLButtonElement>("[data-remove]")
+      if (!rm) return
+      const part = rm.closest<HTMLElement>("[data-part]")!
+      const next = part.previousElementSibling ?? part.nextElementSibling
+      part.remove()
+      renumber()
+      ;(next?.querySelector<HTMLSelectElement>('[data-k="shape"]') ?? box.querySelector<HTMLButtonElement>("[data-add]"))?.focus()
+      update()
+    })
+  }
+</script>

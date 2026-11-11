@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import BoardFeetCalculator from "../../components/BoardFeetCalculator.astro"
+---
+<ToolPage title="Board foot calculator: lumber volume and cost" description="Board feet of lumber from thickness, width and length, for one piece or many, with an optional price per board foot and the formula shown." h1="Board foot calculator" lead="Board feet of lumber for one piece or a whole order, and what it costs." crumb="Board feet" path="/board-foot-calculator/">
+  <BoardFeetCalculator slot="calculator" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>A <strong>board foot</strong> is the volume of a board 1 inch thick, 12 inches wide and 1 foot long: 144 cubic inches.</li>
+    <li><strong>Board feet</strong> = thickness (inches) × width (inches) × length (feet) ÷ 12, for each piece, then times the number of pieces.</li>
+    <li>Measurements in other units are converted with the exact definitions: 1 inch = 2.54 cm and 1 foot = 12 inches.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>NIST, <a href="https://www.nist.gov/pml/owm/publications/nist-handbooks/handbook-130">Handbook 130</a>, Uniform Regulation for the Method of Sale of Commodities, section 2.12 (lumber): the board foot.</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>
