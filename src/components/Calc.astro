@@ -16,6 +16,8 @@ const p = (id: string) => `${spec.id}-${id}`
 const field = "min-h-11 w-full min-w-0 rounded-md border border-gray-9 bg-background px-3 text-base text-gray-12"
 const select = "min-h-11 rounded-md border border-gray-9 bg-background px-2 text-base text-gray-12"
 const desc = (f: { id: string; hint?: string }) => (f.hint ? `${p(f.id)}-hint` : undefined)
+/** A drawing points at the line under it that says, in words, what it shows. */
+const described = (svg: string, id: string) => svg.replace("<svg ", `<svg aria-describedby="${id}" `)
 ---
 <section id="calc" class="not-prose my-10" aria-labelledby="calc-h2">
   <h2 id="calc-h2" class="heading text-2xl text-gray-12">{spec.heading}</h2>
@@ -51,6 +53,20 @@ const desc = (f: { id: string; hint?: string }) => (f.hint ? `${p(f.id)}-hint` :
       <p class="mt-2 font-medium" data-o="extra" hidden={!first.extra}>{first.extra ?? ""}</p>
       <div class="mt-4 grid gap-2 text-sm text-gray-11" data-o="formula">{first.lines.map((l) => <p>{l}</p>)}</div>
     </div>
+    {first.picture && (
+      <figure class="mt-4">
+        <div data-o="picture" data-desc={p("pic-desc")} class="flex justify-center rounded-md border border-gray-6 bg-white p-4" set:html={described(first.picture.svg, p("pic-desc"))} />
+        <p id={p("pic-desc")} data-o="pic-desc" class="mt-2 break-words text-sm text-gray-11">{first.picture.desc}</p>
+        <figcaption class="mt-3 flex flex-wrap gap-3">
+          {spec.pdf && <button type="button" data-pdf class="min-h-11 rounded-control border border-accent-9 bg-accent-9 px-5 font-bold text-accent-contrast hover:border-accent-10 hover:bg-accent-10">Download {spec.fileLabel ?? "PDF"}</button>}
+          {first.picture.downloads !== false && <button type="button" data-dl="svg" class="min-h-11 shrink-0 whitespace-nowrap rounded-control border border-gray-9 bg-background px-4 text-sm font-medium text-gray-12 hover:bg-gray-3">Download SVG</button>}
+          {first.picture.downloads !== false && <button type="button" data-dl="png" class="min-h-11 shrink-0 whitespace-nowrap rounded-control border border-gray-9 bg-background px-4 text-sm font-medium text-gray-12 hover:bg-gray-3">Download PNG</button>}
+        </figcaption>
+      </figure>
+    )}
+    {spec.pdf && !first.picture && (
+      <div class="mt-4"><button type="button" data-pdf class="min-h-11 rounded-control border border-accent-9 bg-accent-9 px-5 font-bold text-accent-contrast hover:border-accent-10 hover:bg-accent-10">Download {spec.fileLabel ?? "PDF"}</button></div>
+    )}
     {first.output !== undefined && (
       <div class="mt-4">
         <div class="flex items-center justify-between gap-3">
@@ -65,12 +81,32 @@ const desc = (f: { id: string; hint?: string }) => (f.hint ? `${p(f.id)}-hint` :
 
 <script>
   import { registry } from "../lib/registry"
-  import { parse } from "../lib/tool"
+  import { parse, type Picture } from "../lib/tool"
+
+  const save = (blob: Blob, name: string) => {
+    const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: name })
+    a.click()
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000)
+  }
+  /** A PNG of the drawing about 1,200 pixels wide (whole pixels per unit of its viewBox), on white. */
+  const png = (pic: Picture) => new Promise<Blob>((done, fail) => {
+    const img = new Image()
+    img.onload = () => {
+      const scale = Math.max(2, Math.round(1200 / pic.width)), c = Object.assign(document.createElement("canvas"), { width: pic.width * scale, height: pic.height * scale })
+      const g = c.getContext("2d")!
+      g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height)
+      g.drawImage(img, 0, 0, c.width, c.height)
+      c.toBlob((b) => (b ? done(b) : fail(new Error("no PNG"))), "image/png")
+    }
+    img.onerror = () => fail(new Error("no image"))
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(pic.raw ?? pic.svg)
+  })
 
   for (const box of document.querySelectorAll<HTMLElement>("[data-tool]")) {
     const spec = registry[box.dataset.tool ?? ""]
     if (!spec) continue
     const out = (k: string) => box.querySelector<HTMLElement>(`[data-o="${k}"]`)
+    let picture: Picture | undefined
     const update = () => {
       const v = Object.fromEntries(spec.fields.map((f) => {
         const el = box.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(`#${spec.id}-${f.id}`)!
@@ -85,10 +121,43 @@ const desc = (f: { id: string; hint?: string }) => (f.hint ? `${p(f.id)}-hint` :
       out("formula")!.replaceChildren(...(a.lines ?? []).map((l) => Object.assign(document.createElement("p"), { textContent: l })))
       const o = out("output")
       if (o) o.textContent = a.ok ? (a.output ?? "") : ""
+      const pic = out("picture")
+      if (pic) {
+        picture = a.ok ? a.picture : undefined
+        pic.innerHTML = picture ? picture.svg.replace("<svg ", `<svg aria-describedby="${pic.dataset.desc}" `) : ""
+        out("pic-desc")!.textContent = picture?.desc ?? ""
+      }
+      for (const b of box.querySelectorAll<HTMLButtonElement>("[data-dl]")) b.disabled = !picture
     }
     box.addEventListener("input", update)
     box.addEventListener("change", update)
     box.querySelector("[data-again]")?.addEventListener("click", update)
+    for (const b of box.querySelectorAll<HTMLButtonElement>("[data-dl]")) {
+      b.addEventListener("click", async () => {
+        if (!picture) return
+        if (b.dataset.dl === "svg") save(new Blob([picture.raw ?? picture.svg], { type: "image/svg+xml" }), `${picture.file}.svg`)
+        else { try { save(await png(picture), `${picture.file}.png`) } catch { b.textContent = "Use Download SVG instead" } }
+      })
+    }
+    // Printables: the PDF is built from the current values when asked for, and its library loads only then.
+    const pdfBtn = box.querySelector<HTMLButtonElement>("[data-pdf]")
+    pdfBtn?.addEventListener("click", async () => {
+      const v = Object.fromEntries(spec.fields.map((f) => {
+        const el = box.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(`#${spec.id}-${f.id}`)!
+        return [f.id, parse(f, el.value, f.kind === "length" ? box.querySelector<HTMLSelectElement>(`#${spec.id}-${f.id}-unit`)!.value : undefined)]
+      }))
+      const a0 = spec.explain(v), said = a0.ok ? a0.headline : ""
+      if (!a0.ok || !spec.pdf) return
+      const label = spec.fileLabel ?? "PDF"
+      out("headline")!.textContent = `Making the ${label}…`
+      try {
+        const { bytes, file } = await spec.pdf(v)
+        save(new Blob([bytes as BlobPart], { type: spec.fileType ?? "application/pdf" }), file)
+        out("headline")!.textContent = `${said} ${label} saved: ${file}.`
+      } catch (e) { out("headline")!.textContent = (e as Error).message }
+    })
+    // Pages with a drawing work out the current one on load, so the download buttons have it.
+    if (out("picture")) update()
     const copy = box.querySelector<HTMLButtonElement>("[data-copy]")
     copy?.addEventListener("click", async () => {
       try { await navigator.clipboard.writeText(out("output")?.textContent ?? ""); copy.textContent = "Copied" }

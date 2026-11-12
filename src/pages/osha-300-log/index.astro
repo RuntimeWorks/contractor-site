@@ -1,0 +1,20 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="OSHA 300 log in Excel, with the 300A summary filled in" description="Download a free OSHA 300 log as an Excel file: OSHA's Form 300 columns, drop-downs for each case's outcome and type, and a Form 300A summary that totals itself." h1="OSHA 300 log (Excel)" lead="OSHA's injury and illness log as a spreadsheet, with the 300A summary worked out for you." crumb="OSHA 300 log" path="/osha-300-log/">
+  <Calc slot="calculator" tool="osha300" />
+  <h2 id="how">How it works</h2>
+  <ul>
+    <li>The first sheet is the log with OSHA's Form 300 columns A to M. For each case pick X for its most serious outcome (death, days away, job transfer or restriction, or other) and X for its type (injury or one of five kinds of illness), and enter the days in K and L.</li>
+    <li>A Check column flags a row with no outcome, two outcomes or no type. For a privacy concern case write "Privacy case" instead of the name and keep the names on a separate confidential list (29 CFR 1904.29(b)(6)).</li>
+    <li>The second sheet is the Form 300A summary, counted by formula from the log. Type in the average number of employees and the hours worked, and it also shows the case rates per 100 full-time workers: the non-fatal rate as BLS counts it, the rate counting deaths, and DART.</li>
+    <li>OSHA accepts records kept on a computer if they hold the same information as its forms (29 CFR 1904.29(b)(4) and (5)). A filled-in copy was recalculated in LibreOffice to check every total. The file is made in your browser; nothing you type is sent anywhere.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Occupational Safety and Health Administration, <a href="https://www.osha.gov/sites/default/files/OSHA-RK-Forms-Package.pdf">Forms for Recording Work-Related Injuries and Illnesses</a> (Form 300 and Form 300A, Rev. 04/2004; package updated August 2025).</li>
+    <li><a href="https://www.ecfr.gov/current/title-29/subtitle-B/chapter-XVII/part-1904/subpart-C/section-1904.29">29 CFR 1904.29</a>: the forms, equivalent forms, records on a computer and privacy concern cases.</li>
+    <li>U.S. Bureau of Labor Statistics, <a href="https://data.bls.gov/iirc/">incidence rate calculator</a>: cases × 200,000 ÷ hours worked, counting non-fatal cases.</li>
+  </ul>
+</ToolPage>

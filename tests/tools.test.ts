@@ -21,7 +21,10 @@ describe("every calculator", () => {
   })
   it("refuses blank fields instead of showing a wrong number", () => {
     for (const spec of Object.values(registry)) {
-      const blank = Object.fromEntries(spec.fields.filter((f) => f.kind !== "select").map((f) => [f.id, null]))
+      // Numbers and lengths only: a blank optional line of text (such as the OSHA log's establishment) is fine.
+      const nums = spec.fields.filter((f) => f.kind === "number" || f.kind === "length")
+      if (!nums.length) continue
+      const blank = Object.fromEntries(nums.map((f) => [f.id, null]))
       expect(spec.explain({ ...startValues(spec.fields), ...blank }).ok, spec.id).toBe(false)
     }
   })
@@ -155,5 +158,42 @@ describe("OSHA incidence rates", () => {
   })
   it("warns that small firms' rates swing", () => {
     expect(run("osha", { hours: 50000 }).lines[2]).toMatch(/one case moves the rate/)
+  })
+})
+
+describe("OSHA incidence rates with deaths", () => {
+  it("keeps the BLS non-fatal rate and adds the rate counting column G", () => {
+    // BLS's calculator counts non-fatal cases: (2 + 1 + 4) × 200,000 ÷ 400,000 = 3.50. With the death: 8 × 0.5 = 4.00.
+    const a = run("osha", { g: 1, h: 2, i: 1, j: 4, hours: 400000 })
+    expect(a.headline).toBe("Total recordable case rate (TRIR) 3.50.")
+    expect(a.lines.join(" ")).toContain("Counting the death in column G too, as many prequalification forms ask: 4.00.")
+    expect(run("osha", { h: 2, i: 1, j: 4, hours: 400000 }).lines.join(" ")).not.toContain("column G")
+  })
+})
+
+// ---------- OSHA 300 log ----------
+import { unzipSync, strFromU8 } from "fflate"
+import { osha300Book, HEADERS } from "../src/lib/tools/osha300"
+
+describe("OSHA 300 log", () => {
+  it("has the log and the 300A summary, OSHA's columns, X drop-downs and the counting formulas", async () => {
+    const files = unzipSync(await osha300Book(2026, "Main yard", 50))
+    const wb = strFromU8(files["xl/workbook.xml"]), log = strFromU8(files["xl/worksheets/sheet1.xml"]), sum = strFromU8(files["xl/worksheets/sheet2.xml"])
+    expect(wb).toContain('<sheet name="Form 300 log" sheetId="1"')
+    expect(wb).toContain('<sheet name="Form 300A summary" sheetId="2"')
+    for (const h of HEADERS) expect(log).toContain(h.replace(/'/g, "'").replace(/&/g, "&amp;"))
+    expect(log).toContain('sqref="G6:J55"><formula1>&quot;X&quot;</formula1>')
+    expect(log).toContain('sqref="M6:R55"><formula1>&quot;X&quot;</formula1>')
+    expect(sum).toContain("COUNTIF(&apos;Form 300 log&apos;!H6:H55,&quot;X&quot;)".replace(/&apos;/g, "'"))
+    expect(sum).toContain("SUM('Form 300 log'!K6:K55)")
+    expect(sum).toContain("ROUND((B5+B6+B7)*200000/B13,2)")
+    expect(Object.keys(files)).toContain("xl/worksheets/sheet2.xml")
+  })
+  it("offers the file through the page", async () => {
+    const spec = registry.osha300
+    const out = await spec.pdf!({ ...startValues(spec.fields), year: "2027", rows: "25" })
+    expect(out.file).toBe("osha-300-log-2027.xlsx")
+    expect(strFromU8(out.bytes.subarray(0, 2))).toBe("PK")
+    expect(strFromU8(unzipSync(out.bytes)["xl/worksheets/sheet1.xml"])).toContain('sqref="G6:J30"')
   })
 })

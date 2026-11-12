@@ -67,4 +67,5 @@ export const tools: Tool[] = [
   { href: "/deck-calculator/", name: "Deck calculator", summary: "Deck boards and joists from the deck size and spacing." },
   { href: "/retaining-wall-calculator/", name: "Retaining wall", summary: "Retaining wall blocks and caps from the wall and block size." },
   { href: "/osha-incidence-rate-calculator/", name: "OSHA incidence rate", summary: "TRIR and DART from the 300 log." },
+  { href: "/osha-300-log/", name: "OSHA 300 log (Excel)", summary: "Form 300 log and 300A summary." },
 ]

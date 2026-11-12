@@ -15,9 +15,19 @@ export type Field =
 
 export type Values = Record<string, number | string | Len | null>
 
+/** A drawing the tool makes, as SVG markup it built itself, with the size of its viewBox for a PNG copy. */
+export interface Picture {
+  /** What the page shows: SVG markup, or an <img> of it. */
+  svg: string; label: string; desc: string; file: string; width: number; height: number
+  /** Set to false to show the picture without download buttons. */
+  downloads?: boolean
+  /** The SVG file itself, when svg is an <img> of it; the downloads use this. */
+  raw?: string
+}
+
 export type Answer =
   | { ok: false; message: string; lines?: string[] }
-  | { ok: true; headline: string; extra?: string | null; lines: string[]; output?: string }
+  | { ok: true; headline: string; extra?: string | null; lines: string[]; output?: string; picture?: Picture }
 
 export interface ToolSpec {
   id: string
@@ -28,6 +38,11 @@ export interface ToolSpec {
   again?: string
   /** What the copyable result box is called, when the tool has one. */
   outputLabel?: string
+  /** For printables: the PDF for the current values, built when the visitor asks for it. */
+  pdf?: (v: Values) => Promise<{ bytes: Uint8Array; file: string }>
+  /** What the made file is, when it isn't a PDF: its button word ("Excel file") and its media type. */
+  fileLabel?: string
+  fileType?: string
 }
 
 /** A field's typed value from what is in the box: blank, negative or not a number is null for numbers and lengths. */

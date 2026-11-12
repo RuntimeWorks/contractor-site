@@ -79,6 +79,17 @@ check((await area()).startsWith("112 square feet"), "area: a 4 × 2 ft cut-out t
 await page.locator('[data-part]').nth(1).locator("[data-remove]").focus(); await page.keyboard.press("Enter")
 check((await area()).startsWith("120 square feet") && (await page.locator("[data-part]").count()) === 1, "area: Remove takes the part away again")
 
+// OSHA 300 log, by keyboard: the year changed, then Enter on the download button saves an .xlsx (a zip: "PK").
+{
+  const p = await browser.newPage({ viewport: { width: 1280, height: 900 }, acceptDownloads: true })
+  await p.goto(`${base}/osha-300-log/`)
+  await p.locator("#osha300-year").selectOption("2027")
+  await p.getByRole("button", { name: "Download Excel file" }).focus()
+  const [dl] = await Promise.all([p.waitForEvent("download"), p.keyboard.press("Enter")])
+  const head = fs.readFileSync(await dl.path()).subarray(0, 2).toString()
+  check(head === "PK" && dl.suggestedFilename() === "osha-300-log-2027.xlsx", `osha300: Enter downloads ${dl.suggestedFilename()}`)
+  await p.close()
+}
 await browser.close()
 server.close()
 console.log(failed ? `\n${failed} keyboard checks failed` : "\nall keyboard checks passed")
