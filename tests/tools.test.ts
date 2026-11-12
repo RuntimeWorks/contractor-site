@@ -78,6 +78,18 @@ describe("fence", () => {
   })
 })
 
+describe("pavers", () => {
+  it("12 × 10 ft of 8 × 4 in pavers is 540, over 1.48 cu yd of base and 0.37 of sand", () => {
+    // 120 sq ft ÷ (32 ÷ 144) = 540 exactly; base 120 × 4/12 = 40 cu ft = 1.48 cu yd; sand 10 cu ft = 0.37 cu yd.
+    expect(run("paver").headline).toBe("540 pavers.")
+    expect(run("paver").extra).toBe("Base 1.48 cu yd compacted (4 in); bedding sand 0.37 cu yd (1 in). Area 120 sq ft.")
+    // A ⅛ in joint: each covers 8.125 × 4.125 / 144 = 0.23275 sq ft; 120 ÷ that = 515.58, so 516; 5% more makes 541.4, so 542.
+    expect(run("paver", { joint: L(0.125, "in") }).headline).toBe("516 pavers.")
+    expect(run("paver", { joint: L(0.125, "in"), waste: 5 }).headline).toBe("542 pavers.")
+    expect(run("paver", { base: L(6, "in") }).extra).toContain("Base 2.22 cu yd compacted (6 in)")
+  })
+})
+
 describe("tile", () => {
   it("12 × 10 ft with 12 in tiles and ⅛ in joints is 118 tiles", () => {
     expect(run("tile").headline).toBe("118 tiles.")

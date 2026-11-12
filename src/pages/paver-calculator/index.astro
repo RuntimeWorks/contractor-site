@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Paver calculator: pavers, base gravel and bedding sand" description="Work out how many pavers a patio, walk or driveway needs, with the compacted base and the bedding sand under them in cubic yards, at the industry's minimum depths." h1="Paver calculator" lead="How many pavers, and the base and sand under them." crumb="Pavers" path="/paver-calculator/">
+  <Calc slot="calculator" tool="paver" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>Each paver with its joint covers (length + joint) × (width + joint); the number of pavers is the area divided by that, rounded up, after any extra you add for cuts and breakage. A joint of 0 counts the paver faces alone, which errs toward buying more.</li>
+    <li>Under the pavers goes a compacted aggregate base and a layer of bedding sand. The Concrete Masonry &amp; Hardscapes Association (CMHA, which ICPI merged into) gives a minimum compacted base of 4 in for sidewalks, patios and walks and 6 in for residential driveways on well-drained soil, thicker in colder climates or on wet or weak soil, and bedding sand screeded to a nominal 1 in.</li>
+    <li>Volumes are area × depth, in cubic feet and cubic yards. The base figure is the compacted volume; loose gravel settles when compacted, so order more and ask your supplier how much for their stone. The bedding sand should be concrete sand (ASTM C33), not masonry sand or stone dust.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Concrete Masonry &amp; Hardscapes Association, <a href="https://www.cmha.org/resource/pav-tec-002/">PAV-TEC-002, Construction of Interlocking Concrete Pavements</a>: minimum base thicknesses, bedding sand thickness and grading.</li>
+  </ul>
+</ToolPage>
