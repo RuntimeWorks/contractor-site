@@ -4,6 +4,7 @@ import { stairs } from "./tools/stairs"
 import { roofPitch } from "./tools/roofpitch"
 import { incidenceRate } from "./tools/safety"
 import { osha300 } from "./tools/osha300"
+import { voltageDrop } from "./tools/voltage"
 import { roofing } from "./tools/roofing"
 import { pool } from "./tools/pool"
 import { fence } from "./tools/fence"
@@ -16,5 +17,5 @@ import { electricity } from "./tools/electricity"
 import { block, brick, asphalt, flooring, siding, deck, retaining } from "./tools/masonry"
 
 export const registry: Record<string, ToolSpec> = Object.fromEntries(
-  [stairs, roofPitch, roofing, pool, fence, tile, drywall, paint, btu, rebar, electricity, block, brick, asphalt, flooring, siding, deck, retaining, incidenceRate, osha300].map((t) => [t.id, t]),
+  [stairs, roofPitch, roofing, pool, fence, tile, drywall, paint, btu, rebar, electricity, block, brick, asphalt, flooring, siding, deck, retaining, incidenceRate, osha300, voltageDrop].map((t) => [t.id, t]),
 )

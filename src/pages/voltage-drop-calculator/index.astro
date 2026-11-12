@@ -1,0 +1,19 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Voltage drop calculator: copper and aluminum, AWG and kcmil" description="Work out voltage drop for a single-phase, DC or three-phase circuit: volts lost, percent, and the smallest copper or aluminum wire size that keeps it within 3%." h1="Voltage drop calculator" lead="Volts lost in a run of wire, and the wire size that keeps the drop within 3%." crumb="Voltage drop" path="/voltage-drop-calculator/">
+  <Calc slot="calculator" tool="vdrop" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>Drop = 2 × one-way length × resistance × current for a single-phase or DC circuit, since current goes out and back; three-phase uses √3 in place of 2. The percent is the drop over the supply voltage.</li>
+    <li>Resistance comes from first principles: the wire's area from the AWG formula (or its kcmil size) and the resistivity of copper or aluminum at 75 °C, the temperature the NEC's Chapter 9 Table 8 uses. Stranded wire is 2% higher, because the strands spiral. Checked against Table 8 from 14 AWG to 500 kcmil: every value within 1.5%.</li>
+    <li>The NEC suggests, as a recommendation rather than a rule, keeping drop to 3% on a branch circuit and 5% for feeder and branch together; over 3% the calculator names the smallest size that gets there. AC reactance is left out, which is fair up to about 4/0. Voltage drop is one test: the wire must also have the ampacity for the load under the code that applies to you.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>ASTM B258: the AWG diameter formula, d = 0.005 in × 92^((36 − n)/39).</li>
+    <li>IEC 60028, the International Annealed Copper Standard (1925, still the basis for stating conductivity): copper at 100% IACS; aluminum conductor (1350) at 61% IACS.</li>
+    <li>NFPA 70, National Electrical Code, Chapter 9 Table 8: the DC resistances at 75 °C the results are checked against.</li>
+  </ul>
+</ToolPage>

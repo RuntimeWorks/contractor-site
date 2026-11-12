@@ -79,6 +79,17 @@ check((await area()).startsWith("112 square feet"), "area: a 4 × 2 ft cut-out t
 await page.locator('[data-part]').nth(1).locator("[data-remove]").focus(); await page.keyboard.press("Enter")
 check((await area()).startsWith("120 square feet") && (await page.locator("[data-part]").count()) === 1, "area: Remove takes the part away again")
 
+// Voltage drop, by keyboard: a bigger wire chosen brings the drop within 3%.
+{
+  const p = await browser.newPage({ viewport: { width: 1280, height: 900 } })
+  await p.goto(`${base}/voltage-drop-calculator/`)
+  const before = await p.locator("[data-o=headline]").textContent()
+  await p.locator("#vdrop-size").focus()
+  await p.locator("#vdrop-size").selectOption("6 AWG")
+  const after = await p.locator("[data-o=headline]").textContent()
+  check(before.includes("4.6") && /Voltage drop \d+\.\d\d V, [12]\.\d\d%\./.test(after), `vdrop: 10 AWG "${before}", then 6 AWG "${after}"`)
+  await p.close()
+}
 // OSHA 300 log, by keyboard: the year changed, then Enter on the download button saves an .xlsx (a zip: "PK").
 {
   const p = await browser.newPage({ viewport: { width: 1280, height: 900 }, acceptDownloads: true })

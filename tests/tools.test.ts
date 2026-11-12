@@ -197,3 +197,32 @@ describe("OSHA 300 log", () => {
     expect(strFromU8(unzipSync(out.bytes)["xl/worksheets/sheet1.xml"])).toContain('sqref="G6:J30"')
   })
 })
+
+// ---------- Voltage drop ----------
+import { SIZES, ohmsPerKft, drop } from "../src/lib/tools/voltage"
+
+describe("voltage drop", () => {
+  const r = (label: string, metal: "copper" | "aluminum", stranded: boolean) => ohmsPerKft(SIZES.find((s) => s.label === label)!.cmil, metal, stranded)
+  it("reproduces NEC Chapter 9 Table 8 (75 °C, ohms per 1,000 ft) within 1.5% from first principles", () => {
+    const table: [string, "copper" | "aluminum", boolean, number][] = [
+      ["14 AWG", "copper", true, 3.14], ["12 AWG", "copper", true, 1.98], ["10 AWG", "copper", true, 1.24], ["8 AWG", "copper", true, 0.778], ["6 AWG", "copper", true, 0.491],
+      ["4 AWG", "copper", true, 0.308], ["2 AWG", "copper", true, 0.194], ["1/0 AWG", "copper", true, 0.122], ["4/0 AWG", "copper", true, 0.0608], ["250 kcmil", "copper", true, 0.0515], ["500 kcmil", "copper", true, 0.0258],
+      ["14 AWG", "copper", false, 3.07], ["12 AWG", "copper", false, 1.93], ["10 AWG", "copper", false, 1.21], ["8 AWG", "copper", false, 0.764],
+      ["12 AWG", "aluminum", true, 3.25], ["6 AWG", "aluminum", true, 0.808], ["4/0 AWG", "aluminum", true, 0.1], ["500 kcmil", "aluminum", true, 0.0424], ["12 AWG", "aluminum", false, 3.18],
+    ]
+    for (const [size, metal, stranded, want] of table) expect(Math.abs(r(size, metal, stranded) / want - 1), `${size} ${metal} ${stranded ? "stranded" : "solid"}`).toBeLessThan(0.015)
+    expect(SIZES.find((s) => s.label === "12 AWG")!.cmil).toBeCloseTo(6530, -1) // the table's area for 12 AWG
+  })
+  it("doubles the length for single-phase and uses √3 for three-phase", () => {
+    expect(drop(10, 100, 1, "1")).toBeCloseTo(2, 10) // 2 × 100 ft × 0.001 Ω/ft × 10 A
+    expect(drop(10, 100, 1, "3")).toBeCloseTo(Math.sqrt(3), 10)
+  })
+  it("flags a drop over 3% and names the smallest size within it", () => {
+    // 30 A over 150 ft of 10 AWG stranded copper: 2 × 150 × 1.238/1000 × 30 ≈ 11.1 V, 4.6% of 240; 8 AWG gives about 2.9%.
+    const a = run("vdrop")
+    expect(a.headline).toMatch(/^Voltage drop 11\.\d\d V, 4\.6\d%\.$/)
+    expect(a.lines[1]).toContain("smallest copper size within 3% here is 8 AWG")
+    expect(run("vdrop", { size: "6 AWG" }).lines[1]).toMatch(/^Within 3%/)
+    expect(run("vdrop", { unit: "m", length: 45.72 }).headline).toBe(a.headline) // 45.72 m is 150 ft
+  })
+})
