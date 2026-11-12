@@ -48,3 +48,6 @@ export const book = async (sheets: SheetSpec[], money: string) => {
   sheets.forEach((s, i) => { files[ws(i)] = sheetXml(s.rows, s.widths, s.extras) })
   return zipSync(Object.fromEntries(Object.entries(files).map(([k, v]) => [k, strToU8(v)])), { level: 6 })
 }
+
+/** One sheet as .xlsx bytes (the shape the earlier sites call). */
+export const workbook = (sheetName: string, rows: Cell[][], widths: number[], money: string, extras: SheetExtras = {}) => book([{ name: sheetName, rows, widths, extras }], money)
