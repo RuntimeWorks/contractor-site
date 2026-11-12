@@ -66,4 +66,5 @@ export const tools: Tool[] = [
   { href: "/siding-calculator/", name: "Siding calculator", summary: "Squares of siding for walls and gables, less openings." },
   { href: "/deck-calculator/", name: "Deck calculator", summary: "Deck boards and joists from the deck size and spacing." },
   { href: "/retaining-wall-calculator/", name: "Retaining wall", summary: "Retaining wall blocks and caps from the wall and block size." },
+  { href: "/osha-incidence-rate-calculator/", name: "OSHA incidence rate", summary: "TRIR and DART from the 300 log." },
 ]

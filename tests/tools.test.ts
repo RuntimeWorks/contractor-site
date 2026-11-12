@@ -139,3 +139,21 @@ describe("masonry, paving, flooring, siding, decks and walls", () => {
     expect(run("wall").headline).toBe("210 blocks and 30 caps.")
   })
 })
+
+// ---------- OSHA incidence rates ----------
+import { rate } from "../src/lib/tools/safety"
+
+describe("OSHA incidence rates", () => {
+  it("matches the BLS worked example: 7 cases over 400,000 hours is 3.5, 3 serious cases 1.5", () => {
+    expect(rate(7, 400_000)).toBe(3.5)
+    expect(rate(3, 400_000)).toBe(1.5)
+  })
+  it("adds columns H, I and J for TRIR and H, I for DART", () => {
+    const a = run("osha", { h: 2, i: 1, j: 4, hours: 400000 })
+    expect(a.headline).toBe("Total recordable case rate (TRIR) 3.50.")
+    expect(a.extra).toBe("DART rate 1.50; days-away rate 1.00. All per 100 full-time workers.")
+  })
+  it("warns that small firms' rates swing", () => {
+    expect(run("osha", { hours: 50000 }).lines[2]).toMatch(/one case moves the rate/)
+  })
+})

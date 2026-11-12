@@ -165,7 +165,7 @@ export const deck: ToolSpec = {
 
 export const retaining: ToolSpec = {
   id: "wall",
-  heading: "Work out retaining wall blocks",
+  heading: "Retaining wall blocks",
   fields: [
     { kind: "length", id: "length", label: "Wall length", value: "30", unit: "ft" },
     { kind: "length", id: "height", label: "Wall height above grade", value: "2", unit: "ft" },
