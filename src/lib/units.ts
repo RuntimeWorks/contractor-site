@@ -18,7 +18,10 @@ export const unitLabel = (u: LengthUnit) => lengthUnits.find((x) => x.value === 
 const METERS_PER: Record<LengthUnit, number> = { ft: 0.3048, in: 0.0254, yd: 0.9144, m: 1, cm: 0.01 }
 
 /** A length in any unit, in feet. */
-export const toFeet = (value: number, unit: LengthUnit) => (value * METERS_PER[unit]) / METERS_PER.ft
+export const toFeet = (value: number, unit: LengthUnit) =>
+  // Inches, feet and yards by exact division or multiplication, so 3 in is exactly 0.25 ft (going through meters
+  // left 0.24999…, which turned 10.875 into 10.87 on the page). Metric through the exact 0.3048 m.
+  unit === "ft" ? value : unit === "in" ? value / 12 : unit === "yd" ? value * 3 : (value * METERS_PER[unit]) / METERS_PER.ft
 
 /** 1 ft³ = 0.3048³ m³ = 0.028316846592 m³ exactly. */
 export const CUBIC_METERS_PER_CUBIC_FOOT = 0.3048 ** 3

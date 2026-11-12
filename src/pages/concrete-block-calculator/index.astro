@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Concrete block calculator: 8x8x16 blocks for a wall" description="How many 8 × 8 × 16 in concrete blocks a wall needs, from its length and height, less openings." h1="Concrete block calculator" lead="How many 8 × 8 × 16 in concrete blocks a wall needs." crumb="Concrete block" path="/concrete-block-calculator/">
+  <Calc slot="calculator" tool="block" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>A standard block is nominally 8 × 8 × 16 in: its specified size, 7⅝ × 7⅝ × 15⅝ in, plus a ⅜ in mortar joint.</li>
+    <li>Each block covers 8 × 16 in = 128 square inches of wall, so a square foot takes 144 ÷ 128 = <strong>1.125 blocks</strong>.</li>
+    <li><strong>Blocks</strong> = wall area less openings × 1.125, plus your own allowance for breakage and cuts, rounded up.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>National Concrete Masonry Association, <a href="https://www.lampus.com/files/Resources/NCMA-TEK-02-01B.pdf">TEK 2-1B, Typical Sizes and Shapes of Concrete Masonry Units</a>: nominal and specified dimensions of an 8 × 8 × 16 in unit.</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

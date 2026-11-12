@@ -115,3 +115,27 @@ describe("electricity", () => {
     expect(run("power").headline).toBe("$32.69 for 30 days.")
   })
 })
+
+describe("masonry, paving, flooring, siding, decks and walls", () => {
+  it("a 40 × 4 ft wall is 160 sq ft × 1.125 = 180 blocks (NCMA nominal 8 × 16 in face)", () => {
+    expect(run("block").headline).toBe("180 blocks of 8 × 8 × 16 in.")
+  })
+  it("modular brick with ⅜ in joints is 6.86 a sq ft: a 30 × 8 ft wall less 21 sq ft is 1,502 bricks", () => {
+    // 219 sq ft × 144 ÷ 21 = 1,501.7.
+    const a = run("brick")
+    expect(a.headline).toBe("1,502 bricks.")
+    expect(a.extra).toContain("6.86 bricks per sq ft")
+  })
+  it("50 × 12 ft at 3 in and 145 lb/ft³ is 150 ft³, 10.88 tons", () => {
+    expect(run("asphalt").headline).toBe("10.88 tons of asphalt.")
+  })
+  it("flooring, siding, decks and walls", () => {
+    expect(run("floor").headline).toBe("9 boxes.")
+    // walls 160 × 9 = 1,440; gables 2 × 30 × 7 ÷ 2 = 210; less 180 = 1,470 sq ft = 14.7 squares.
+    expect(run("siding").headline).toBe("14.7 squares of siding.")
+    // 144 in ÷ 5.625 = 25.6 → 26 rows of one 16 ft board; joists 192 ÷ 16 + 1 = 13.
+    expect(run("deck").headline).toBe("26 boards of 16 ft and 13 joists.")
+    // 360 ÷ 12 = 30 a course; 24 ÷ 4 = 6 + 1 buried = 7 courses; 30 caps.
+    expect(run("wall").headline).toBe("210 blocks and 30 caps.")
+  })
+})

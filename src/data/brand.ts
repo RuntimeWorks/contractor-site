@@ -59,4 +59,11 @@ export const tools: Tool[] = [
   { href: "/btu-calculator/", name: "BTU calculator", summary: "Room air conditioner size in BTU per hour from ENERGY STAR's chart." },
   { href: "/rebar-calculator/", name: "Rebar calculator", summary: "Feet, pounds and stock bars of rebar for a slab grid, by bar size and spacing." },
   { href: "/electricity-cost-calculator/", name: "Electricity cost calculator", summary: "Kilowatt-hours and cost to run an appliance from its watts and hours of use." },
+  { href: "/concrete-block-calculator/", name: "Concrete block", summary: "8 × 8 × 16 in concrete blocks for a wall, less openings." },
+  { href: "/brick-calculator/", name: "Brick calculator", summary: "Bricks for a wall from the brick size and mortar joint." },
+  { href: "/asphalt-calculator/", name: "Asphalt calculator", summary: "Tons of hot mix asphalt from the area and compacted thickness." },
+  { href: "/flooring-calculator/", name: "Flooring calculator", summary: "Square feet and boxes of flooring for a room." },
+  { href: "/siding-calculator/", name: "Siding calculator", summary: "Squares of siding for walls and gables, less openings." },
+  { href: "/deck-calculator/", name: "Deck calculator", summary: "Deck boards and joists from the deck size and spacing." },
+  { href: "/retaining-wall-calculator/", name: "Retaining wall", summary: "Retaining wall blocks and caps from the wall and block size." },
 ]

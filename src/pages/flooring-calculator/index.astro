@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Flooring calculator: square feet and boxes" description="Square feet of flooring and boxes to buy for a room, with your own allowance for cuts." h1="Flooring calculator" lead="How many boxes of flooring a room needs." crumb="Flooring" path="/flooring-calculator/">
+  <Calc slot="calculator" tool="floor" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Area</strong> = room length × width.</li>
+    <li><strong>Boxes</strong> = area plus your allowance for cuts ÷ the square feet printed on the box, rounded up.</li>
+    <li>Diagonal and herringbone layouts use more; the allowance is yours to set.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Arithmetic on the numbers you enter; no outside figures.</li>
+  </ul>
+</ToolPage>

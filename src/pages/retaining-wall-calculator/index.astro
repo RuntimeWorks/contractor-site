@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Retaining wall block calculator" description="How many retaining wall blocks and caps a wall needs from its length and height and the block size." h1="Retaining wall calculator" lead="How many retaining wall blocks and caps a wall needs." crumb="Retaining wall" path="/retaining-wall-calculator/">
+  <Calc slot="calculator" tool="wall" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Blocks per course</strong> = wall length ÷ block face length, rounded up.</li>
+    <li><strong>Courses</strong> = height above grade ÷ block face height, rounded up, plus the courses the maker says to bury.</li>
+    <li><strong>Caps</strong> = wall length ÷ cap length, rounded up. Taller walls, and walls near slopes, driveways or buildings, may need an engineer's design.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Arithmetic on the sizes you enter, from the block maker's product sheet; no outside figures.</li>
+  </ul>
+</ToolPage>

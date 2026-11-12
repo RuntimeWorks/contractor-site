@@ -1,0 +1,17 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Siding calculator: squares of siding for a house" description="Squares of siding for a house's walls and gables, less doors and windows." h1="Siding calculator" lead="How many squares of siding a house needs." crumb="Siding" path="/siding-calculator/">
+  <Calc slot="calculator" tool="siding" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Walls</strong> = distance around the house × wall height to the eaves.</li>
+    <li><strong>Gables</strong> are triangles: width × height ÷ 2 each.</li>
+    <li>Doors and windows are taken away; a <strong>square</strong> is 100 square feet. Trim and corners are not counted.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Arithmetic on the numbers you enter; no outside figures.</li>
+  </ul>
+</ToolPage>

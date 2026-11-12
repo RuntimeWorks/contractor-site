@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Deck calculator: deck boards and joists" description="How many deck boards and joists a deck needs from its size, board width, gap and joist spacing." h1="Deck calculator" lead="How many deck boards and joists a deck needs." crumb="Deck" path="/deck-calculator/">
+  <Calc slot="calculator" tool="deck" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Rows of boards</strong> = deck width ÷ (board width + gap), rounded up; each row takes deck length ÷ board length boards, rounded up.</li>
+    <li>A nominal 6 in board is 5½ in wide once dressed.</li>
+    <li><strong>Joists</strong> = deck length ÷ spacing, rounded down, plus one. Beams, posts, rim joists and fasteners are not counted; your plans and local code set the spacing and sizes.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>NIST, <a href="https://www.nist.gov/document/doc-ps-20-20-american-softwood-lumber-standard">Voluntary Product Standard PS 20-20, American Softwood Lumber Standard</a>: a nominal 6 in board is 5-1/2 in dressed dry.</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

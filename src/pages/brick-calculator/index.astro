@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Brick calculator: how many bricks for a wall" description="How many bricks a wall needs from its size, the brick size and the mortar joint, starting from the modular brick." h1="Brick calculator" lead="How many bricks a wall needs, for any brick size and joint." crumb="Brick" path="/brick-calculator/">
+  <Calc slot="calculator" tool="brick" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li>Each brick and its joint cover (length + joint) × (height + joint) of wall.</li>
+    <li>A <strong>modular brick</strong> is 3⅝ × 2¼ × 7⅝ in; with ⅜ in joints it covers 8 × 2⅝ = 21 square inches, so a square foot takes 144 ÷ 21 = 6.86 bricks.</li>
+    <li>The count is a minimum: add your own allowance for breakage and cuts.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Brick Industry Association, <a href="https://www.gobrick.com/media/file/10-dimensioning-and-estimating-brick-masonry.pdf">Technical Note 10, Dimensioning and Estimating Brick Masonry</a>.</li>
+    <li>Glen-Gery, <a href="https://www.glengery.com/brick-sizes">Brick Sizes</a>: modular brick 3-5/8 × 2-1/4 × 7-5/8 in, about 6.86 per square foot with 3/8 in joints (read 2026-11-11).</li>
+  </ul>
+</ToolPage>

@@ -1,0 +1,18 @@
+---
+import ToolPage from "../../layouts/ToolPage.astro"
+import Calc from "../../components/Calc.astro"
+---
+<ToolPage title="Asphalt calculator: tons of hot mix for a driveway" description="Tons of compacted hot mix asphalt for a driveway or lot from its length, width and thickness." h1="Asphalt calculator" lead="How many tons of asphalt a driveway or lot needs." crumb="Asphalt" path="/asphalt-calculator/">
+  <Calc slot="calculator" tool="asphalt" />
+  <h2 id="how">How the numbers are worked out</h2>
+  <ul>
+    <li><strong>Volume</strong> = length × width × compacted thickness, in cubic feet.</li>
+    <li><strong>Tons</strong> = cubic feet × density ÷ 2,000 lb. Compacted hot mix is about 145 lb per cubic foot, the figure attributed to the Asphalt Institute's MS-4; your plant's mix design gives the exact one.</li>
+    <li>Paving crews order by the ton; the result is before any allowance for uneven base.</li>
+  </ul>
+  <h2 id="sources">Sources</h2>
+  <ul>
+    <li>Asphalt Institute MS-4 density of 145 lb/ft³, as cited by <a href="https://calcsummit.com/calculators/construction/asphalt/">CalcSummit's asphalt calculator</a> and other paving estimators (read 2026-11-11).</li>
+    <li>NIST, <a href="https://www.nist.gov/pml/special-publication-811">Guide for the Use of the International System of Units (SP 811)</a>: the exact inch and foot.</li>
+  </ul>
+</ToolPage>

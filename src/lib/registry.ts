@@ -11,7 +11,8 @@ import { paint } from "./tools/paint"
 import { btu } from "./tools/btu"
 import { rebar } from "./tools/rebar"
 import { electricity } from "./tools/electricity"
+import { block, brick, asphalt, flooring, siding, deck, retaining } from "./tools/masonry"
 
 export const registry: Record<string, ToolSpec> = Object.fromEntries(
-  [stairs, roofPitch, roofing, pool, fence, tile, drywall, paint, btu, rebar, electricity].map((t) => [t.id, t]),
+  [stairs, roofPitch, roofing, pool, fence, tile, drywall, paint, btu, rebar, electricity, block, brick, asphalt, flooring, siding, deck, retaining].map((t) => [t.id, t]),
 )
